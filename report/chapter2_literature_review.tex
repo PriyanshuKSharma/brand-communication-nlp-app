@@ -1,0 +1,25 @@
+\chapter{Literature Review}
+
+\section{Overview of Social Media Analytics}
+Social media analytics is defined as the practice of gathering data from social media websites and analyzing that data using social media analytics tools to make business decisions. Holsapple et al. \cite{holsapple2014business} describe it as a distinct discipline that combines principles from sociology, network theory, and computer science. The primary goal is to understand the "voice of the customer" (VoC). Early approaches relied heavily on volume metrics—likes, shares, and follower counts. However, as noted by Gandomi and Haider \cite{gandomi2015beyond}, these "vanity metrics" often fail to capture the nuance of consumer sentiment. This has necessitated a shift towards "content analytics," which focuses on the semantic meaning of user-generated text.
+
+\section{Sentiment Analysis Techniques}
+Sentiment analysis, or opinion mining, is the computational study of people's opinions, sentiments, evaluations, attitudes, and emotions from written language.
+
+\subsection{Lexicon-Based Approaches}
+Lexicon-based methods rely on a predefined dictionary of words, where each word is associated with a specific sentiment polarity (positive or negative). Taboada et al. \cite{taboada2011lexicon} demonstrated the effectiveness of this approach with the Semantic Orientation CALculator (SO-CAL). The advantage of lexicon-based models is their interpretability and lack of training data requirements. However, they often struggle with context-dependent words and sarcasm. In this project, we utilize \textbf{TextBlob}, which employs a refined lexicon-based approach enhanced with heuristic rules for negation and intensification, offering a balance between speed and accuracy for real-time applications.
+
+\subsection{Machine Learning Approaches}
+Supervised machine learning techniques, such as Support Vector Machines (SVM) and Naive Bayes, treat sentiment analysis as a classification problem. Pang and Lee \cite{pang2008opinion} provided a foundational survey of these methods, highlighting their superior performance over simple lexicons when labeled training data is available. More recently, Deep Learning models like Recurrent Neural Networks (RNNs) and Transformers (BERT, GPT) have set new benchmarks \cite{devlin2018bert}. While highly accurate, these models require significant computational resources. For the scope of this project, which prioritizes real-time responsiveness on standard hardware, a rule-based approach was deemed more appropriate.
+
+\section{Topic Modeling in Short Text}
+Topic modeling is an unsupervised learning technique used to discover abstract "topics" that occur in a collection of documents.
+
+\subsection{Latent Dirichlet Allocation (LDA)}
+Blei et al. \cite{blei2003latent} introduced LDA, a generative probabilistic model that assumes each document is a mixture of topics. While LDA is the industry standard for long documents (e.g., news articles, research papers), it often performs poorly on short, sparse text like tweets or YouTube comments because of the limited word co-occurrence information \cite{hong2010empirical}.
+
+\subsection{Clustering-Based Approaches (TF-IDF + K-Means)}
+An alternative approach for short text is the vector space model. By representing documents as TF-IDF (Term Frequency-Inverse Document Frequency) vectors and applying clustering algorithms like K-Means, distinct thematic groups can be identified. This method is particularly effective for social media data as it weights unique, descriptive terms heavily while ignoring common stopwords. Research by Huang \cite{huang2008similarity} suggests that for specific datasets, K-Means can converge faster and produce more distinct clusters than probabilistic models. This project adopts the TF-IDF + K-Means approach to ensure distinct topic separation in short comments.
+
+\section{Gap Analysis}
+While numerous academic studies exist on the theoretical aspects of NLP, there is a scarcity of end-to-end, open-source frameworks that integrate data fetching, cleaning, analysis, and visualization into a single cohesive workflow for brand managers. Most existing tools are either purely command-line based (inaccessible to non-tech users) or proprietary SaaS platforms with high costs. \textbf{Brand Intel} bridges this gap by providing a transparent, customizable, and user-friendly interface for applied social media analytics.

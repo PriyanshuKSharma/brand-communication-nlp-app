@@ -1,0 +1,146 @@
+\documentclass[12pt, a4paper]{report}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{setspace}
+\usepackage{times}
+\usepackage{titlesec}
+\usepackage{hyperref}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows, positioning}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+
+% Page Geometry
+\geometry{
+    top=1.0in,
+    bottom=1.0in,
+    left=1.2in,
+    right=1.0in
+}
+
+% Line Spacing
+\onehalfspacing
+
+% Hyperlink Setup
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    filecolor=magenta,      
+    urlcolor=blue,
+    citecolor=black,
+}
+
+% Code Listing Style
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+\lstset{style=mystyle}
+
+% Title Page Data
+\title{\textbf{\LARGE BRAND INTEL: AI-POWERED SOCIAL MEDIA ANALYTICS}\\
+\large A Case Study on Enhancing Brand Communication Strategy using NLP}
+\author{\textbf{Priyanshu Kumar Sharma}}
+\date{\today}
+
+\begin{document}
+
+% Title Page
+\begin{titlepage}
+    \begin{center}
+        \vspace*{1cm}
+        
+        \begin{figure}[h]
+            \centering
+            % Placeholder for the logo. The user needs to place 'adypu-logo.png' in the report folder.
+            \includegraphics[width=0.5\linewidth]{adypu-logo.png} 
+        \end{figure}
+        
+        \vspace{1.5cm}
+        
+        \Huge
+        \textbf{Brand Intel: AI-Powered Social Media Analytics}
+        
+        \vspace{0.5cm}
+        \Large
+        \textit{Enhancing Brand Communication Strategy using NLP}
+        
+        \vspace{2cm}
+        
+        \textbf{Submitted by:}
+        
+        \vspace{0.5cm}
+        \Large
+        \textbf{Priyanshu Kumar Sharma | 2022-B-17102004A}
+        
+        \vspace{1.5cm}
+        
+        \textbf{Under the Guidance of:}
+        
+        \vspace{0.5cm}
+        \Large
+        \textbf{Prof. Ravi Khatri}
+        
+        \vspace{2cm}
+        
+        \large
+        \textbf{B.Tech Information Technology (CTIS) | Semester 7}
+        
+        \vspace{0.5cm}
+        
+        \textbf{Ajeenkya DY Patil University, Pune}
+        
+        \vspace{0.5cm}
+        
+        \today
+        
+    \end{center}
+\end{titlepage}
+
+% Front Matter
+\pagenumbering{roman}
+\include{front_matter}
+
+% Table of Contents
+\tableofcontents
+\listoffigures
+\newpage
+
+% Main Content
+\pagenumbering{arabic}
+
+\include{chapter1_introduction}
+\include{chapter2_literature_review}
+\include{chapter3_system_design}
+\include{chapter4_implementation}
+\include{chapter5_results}
+\include{chapter6_conclusion}
+
+% References
+\bibliographystyle{plain}
+\bibliography{references}
+
+\end{document}

@@ -1,0 +1,110 @@
+\chapter{Implementation}
+
+\section{Development Environment}
+The project was developed using the following environment and tools:
+\begin{itemize}
+    \item \textbf{Operating System:} Windows 11
+    \item \textbf{Programming Language:} Python 3.11
+    \item \textbf{IDE:} Visual Studio Code
+    \item \textbf{Version Control:} Git \& GitHub
+\end{itemize}
+
+\section{Key Modules and Functions}
+
+\subsection{Text Preprocessing}
+The `clean\_text` function is critical for normalizing the noisy social media data. It uses regular expressions (`re` module) to strip unwanted characters.
+
+\begin{lstlisting}[language=Python, caption=Text Cleaning Function]
+def clean_text(text):
+    """
+    Cleans the input text by:
+    1. Lowercasing
+    2. Removing URLs
+    3. Removing mentions (@user) and hashtags (#tag)
+    4. Removing special characters and numbers
+    """
+    if not isinstance(text, str):
+        return ""
+    
+    text = text.lower()
+    # Remove URLs
+    text = re.sub(r'http\S+|www\S+|https\S+', '', text, flags=re.MULTILINE)
+    # Remove mentions and hashtags
+    text = re.sub(r'\@\w+|\#\w+', '', text)
+    # Remove punctuation and numbers
+    text = re.sub(r'[^\w\s]', '', text)
+    text = re.sub(r'\d+', '', text)
+    
+    return text.strip()
+\end{lstlisting}
+
+\subsection{Sentiment Analysis}
+Sentiment analysis is performed using the `TextBlob` library. The function returns both a polarity score and a categorical label.
+
+\begin{lstlisting}[language=Python, caption=Sentiment Analysis Function]
+def get_sentiment(text):
+    """
+    Returns a tuple: (polarity_score, label)
+    Polarity is a float between -1.0 and 1.0.
+    """
+    blob = TextBlob(text)
+    polarity = blob.sentiment.polarity
+    
+    if polarity > 0.1:
+        return polarity, "Positive"
+    elif polarity < -0.1:
+        return polarity, "Negative"
+    else:
+        return polarity, "Neutral"
+\end{lstlisting}
+
+\subsection{Topic Modeling}
+The topic modeling pipeline uses `TfidfVectorizer` to convert text to numbers and `KMeans` to cluster them.
+
+\begin{lstlisting}[language=Python, caption=Topic Modeling Pipeline]
+def perform_topic_modeling(texts, n_topics=5):
+    # 1. Vectorization
+    vectorizer = TfidfVectorizer(max_features=1000, stop_words='english')
+    tfidf_matrix = vectorizer.fit_transform(texts)
+    
+    # 2. Clustering
+    kmeans = KMeans(n_clusters=n_topics, random_state=42)
+    kmeans.fit(tfidf_matrix)
+    
+    # 3. Extract Keywords
+    feature_names = vectorizer.get_feature_names_out()
+    topic_keywords = []
+    
+    for topic_idx, topic in enumerate(kmeans.cluster_centers_):
+        top_features_ind = topic.argsort()[:-6:-1]
+        keywords = [feature_names[i] for i in top_features_ind]
+        topic_keywords.append(", ".join(keywords))
+        
+    return kmeans.labels_, topic_keywords, kmeans
+\end{lstlisting}
+
+\section{YouTube API Integration}
+Fetching data from YouTube requires handling pagination to retrieve more than the default 20 comments. The application implements a `while` loop that checks for the `nextPageToken` in the API response.
+
+\begin{lstlisting}[language=Python, caption=YouTube Data Fetching Logic]
+request = youtube.commentThreads().list(
+    part="snippet",
+    videoId=video_id,
+    maxResults=100,
+    textFormat="plainText"
+)
+
+while request and len(comments_data) < 500: 
+    response = request.execute()
+    # ... process items ...
+    if "nextPageToken" in response:
+        request = youtube.commentThreads().list(
+            # ... params ...
+            pageToken=response["nextPageToken"]
+        )
+    else:
+        break
+\end{lstlisting}
+
+\section{User Interface Implementation}
+The UI is structured using `st.tabs` to separate different analytical views. This prevents information overload. The "Recommendations" tab uses heuristic logic: if a topic cluster has a high percentage of negative sentiment, it is flagged as a "Pain Point".

@@ -1,0 +1,82 @@
+\chapter{System Design}
+
+\section{System Architecture}
+The architecture of \textbf{Brand Intel} follows a modular, three-tier design pattern comprising the Presentation Layer, the Application Logic Layer, and the Data Layer. This separation of concerns ensures maintainability and scalability.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=2cm]
+    % Nodes
+    \node (user) [rectangle, draw=black, fill=blue!10, minimum size=1cm] {User (Brand Manager)};
+    \node (ui) [rectangle, draw=black, fill=green!10, minimum width=3cm, minimum height=1cm, below=of user] {Streamlit Frontend};
+    \node (backend) [rectangle, draw=black, fill=orange!10, minimum width=4cm, minimum height=1cm, below=of ui] {Python Backend (app.py)};
+    \node (nlp) [rectangle, draw=black, fill=red!10, minimum width=4cm, minimum height=1cm, below=of backend] {NLP Engine (nlp\_utils.py)};
+    \node (api) [rectangle, draw=black, fill=yellow!10, minimum width=3cm, minimum height=1cm, right=of backend, xshift=2cm] {YouTube Data API};
+    \node (db) [cylinder, draw=black, fill=gray!10, shape border rotate=90, aspect=0.25, minimum height=1.5cm, minimum width=1.5cm, left=of backend, xshift=-2cm] {Data Storage (CSV)};
+
+    % Arrows
+    \draw[->, thick] (user) -- (ui);
+    \draw[->, thick] (ui) -- (backend);
+    \draw[<->, thick] (backend) -- (api);
+    \draw[<->, thick] (backend) -- (nlp);
+    \draw[<->, thick] (backend) -- (db);
+\end{tikzpicture}
+\caption{High-Level System Architecture of Brand Intel}
+\label{fig:arch}
+\end{figure}
+
+\subsection{Component Description}
+\begin{itemize}
+    \item \textbf{Streamlit Frontend:} The user interface is built using Streamlit, which renders interactive widgets (sliders, text inputs) and data visualizations (charts, tables) directly from Python scripts.
+    \item \textbf{Python Backend:} The core logic resides in \texttt{app.py}. It orchestrates the flow of data between the user inputs, the API, and the processing modules.
+    \item \textbf{YouTube Data API:} An external service used to fetch real-time comments. The system authenticates using an API key stored securely in \texttt{.streamlit/secrets.toml}.
+    \item \textbf{NLP Engine:} Located in \texttt{nlp\_utils.py}, this module contains the pure functions for text cleaning, sentiment scoring (TextBlob), and topic modeling (Scikit-learn).
+\end{itemize}
+
+\section{Data Flow Workflow}
+The data processing pipeline is the heart of the application. It transforms raw, unstructured text into structured insights. The workflow proceeds sequentially as follows:
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=1.5cm, auto]
+    % Styles
+    \tikzstyle{block} = [rectangle, draw, fill=blue!20, text width=5em, text centered, rounded corners, minimum height=4em]
+    \tikzstyle{line} = [draw, -latex']
+    \tikzstyle{cloud} = [draw, ellipse, fill=red!20, node distance=3cm, minimum height=2em]
+    
+    % Nodes
+    \node [block] (input) {Raw Comments};
+    \node [block, below of=input, node distance=2.5cm] (clean) {Text Cleaning};
+    \node [block, below of=clean, node distance=2.5cm] (sentiment) {Sentiment Analysis};
+    \node [block, below of=sentiment, node distance=2.5cm] (vector) {TF-IDF Vectorization};
+    \node [block, below of=vector, node distance=2.5cm] (cluster) {K-Means Clustering};
+    \node [block, below of=cluster, node distance=2.5cm] (viz) {Visualization};
+    
+    % Edges
+    \path [line] (input) -- node {Input} (clean);
+    \path [line] (clean) -- node {Clean Text} (sentiment);
+    \path [line] (sentiment) -- node {Scores} (vector);
+    \path [line] (vector) -- node {Vectors} (cluster);
+    \path [line] (cluster) -- node {Topics} (viz);
+    
+    % Annotations
+    \node [right of=clean, node distance=4cm, text width=4cm] (note1) {\small Remove URLs, emojis, stopwords, lowercase.};
+    \draw [dashed] (clean) -- (note1);
+
+    \node [right of=sentiment, node distance=4cm, text width=4cm] (note2) {\small Polarity Score (-1 to +1).};
+    \draw [dashed] (sentiment) -- (note2);
+    
+    \node [right of=cluster, node distance=4cm, text width=4cm] (note3) {\small Group comments into $K$ topics.};
+    \draw [dashed] (cluster) -- (note3);
+
+\end{tikzpicture}
+\caption{Data Processing Workflow}
+\label{fig:workflow}
+\end{figure}
+
+\section{Design Decisions}
+\subsection{Choice of Framework: Streamlit}
+Streamlit was selected over alternatives like Flask or Django because of its "data-first" philosophy. It allows for rapid prototyping of data applications without the need for writing HTML/CSS or managing complex state, which aligns with the project's goal of creating a tool for analysts rather than web developers.
+
+\subsection{Choice of Algorithm: K-Means}
+For topic modeling, K-Means was chosen over Latent Dirichlet Allocation (LDA). While LDA is powerful, it is computationally expensive and often produces overlapping topics on short text. K-Means, when combined with TF-IDF, produces hard clusters which are easier to interpret for the specific use case of categorizing customer complaints (e.g., a comment is either about "Price" or "Battery", rarely both in a short sentence).
