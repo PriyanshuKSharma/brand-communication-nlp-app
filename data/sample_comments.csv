@@ -1,0 +1,26 @@
+comment_id,user_id,timestamp,comment_text,likes,platform,post_id
+1,user_123,2023-10-01 10:00:00,Love this product! Best purchase ever.,15,Instagram,post_001
+2,user_456,2023-10-01 10:05:00,Delivery was terrible arrived 3 days late.,2,Instagram,post_001
+3,user_789,2023-10-01 10:15:00,Is this available in blue?,0,Instagram,post_001
+4,user_101,2023-10-01 11:00:00,Too expensive for the quality.,5,YouTube,ad_001
+5,user_202,2023-10-01 11:30:00,Customer support helped me quickly.,10,X (Twitter),tweet_001
+6,user_303,2023-10-02 09:00:00,The ad is misleading.,1,YouTube,ad_001
+7,user_404,2023-10-02 09:45:00,Can you ship to Canada?,0,Instagram,post_002
+8,user_505,2023-10-02 10:00:00,Amazing colors!,20,Instagram,post_002
+9,user_606,2023-10-02 12:00:00,My package was damaged.,3,X (Twitter),tweet_002
+10,user_707,2023-10-03 08:00:00,Price is a bit high but worth it.,8,Instagram,post_001
+11,user_808,2023-10-03 08:30:00,I waited 2 weeks for delivery.,4,Instagram,post_001
+12,user_909,2023-10-03 09:00:00,Great quality material.,12,YouTube,ad_001
+13,user_010,2023-10-03 10:00:00,Where is my order?,1,X (Twitter),tweet_003
+14,user_111,2023-10-04 11:00:00,Super happy with the service.,9,Instagram,post_003
+15,user_212,2023-10-04 12:00:00,Not what I expected.,2,YouTube,ad_002
+16,user_313,2023-10-04 13:00:00,Does it come with a warranty?,0,Instagram,post_003
+17,user_414,2023-10-05 14:00:00,Worst experience ever.,1,X (Twitter),tweet_004
+18,user_515,2023-10-05 15:00:00,Highly recommend this brand.,18,Instagram,post_001
+19,user_616,2023-10-05 16:00:00,Shipping fees are too high.,6,YouTube,ad_001
+20,user_717,2023-10-06 09:00:00,Thank you for the quick response.,7,X (Twitter),tweet_001
+21,user_818,2023-10-06 10:00:00,The size is too small.,2,Instagram,post_002
+22,user_919,2023-10-06 11:00:00,Beautiful design.,14,Instagram,post_002
+23,user_020,2023-10-07 12:00:00,I want a refund.,0,X (Twitter),tweet_004
+24,user_121,2023-10-07 13:00:00,Very helpful staff.,11,YouTube,ad_002
+25,user_222,2023-10-07 14:00:00,Why is it so expensive?,3,Instagram,post_003

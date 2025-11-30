@@ -1,7 +1,7 @@
 # 🧠 Brand Intel: AI-Powered Social Media Analytics
 
 [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://github.com/PriyanshuKSharma/brand-communication-nlp-app)
-[![Python](https://img.shields.io/badge/Python-3.8%2B-blue?style=for-t he-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![Python](https://img.shields.io/badge/Python-3.8%2B-blue?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
 [![NLP](https://img.shields.io/badge/AI-Natural%20Language%20Processing-purple?style=for-the-badge)](https://en.wikipedia.org/wiki/Natural_language_processing)
 [![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
 
@@ -9,7 +9,7 @@
 
 ---
 
-## � Overview
+## 🚀 Overview
 
 **Brand Intel** is a cutting-edge analytics dashboard designed for marketing teams and brand managers. It leverages **Natural Language Processing (NLP)** to "listen" to social media conversations at scale.
 
@@ -35,15 +35,17 @@ Instead of manually reading thousands of comments, this tool automatically:
 
 ---
 
-## 🛠️ Tech Stack
+## 🛠️ Technologies Used
 
-- **Frontend**: [Streamlit](https://streamlit.io/) (Python-based web framework)
-- **Core Language**: Python 3.x
-- **NLP & ML**:
-  - `TextBlob` (Sentiment Analysis)
-  - `Scikit-learn` (TF-IDF Vectorization, K-Means Clustering)
-- **Data Handling**: `Pandas`, `NumPy`
-- **API**: Google YouTube Data API v3
+The project is built using a robust stack of modern data science libraries:
+
+| Category            | Technologies                                                                                                                                                                                             |
+| :------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Frontend UI**     | ![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=Streamlit&logoColor=white)                                                                                           |
+| **Language**        | ![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)                                                                                                    |
+| **NLP & ML**        | ![Scikit-Learn](https://img.shields.io/badge/scikit--learn-F7931E?style=for-the-badge&logo=scikit-learn&logoColor=white) ![TextBlob](https://img.shields.io/badge/TextBlob-000000?style=for-the-badge)   |
+| **Data Processing** | ![Pandas](https://img.shields.io/badge/Pandas-150458?style=for-the-badge&logo=pandas&logoColor=white) ![NumPy](https://img.shields.io/badge/Numpy-013243?style=for-the-badge&logo=numpy&logoColor=white) |
+| **APIs**            | ![Google Cloud](https://img.shields.io/badge/Google_Cloud-4285F4?style=for-the-badge&logo=google-cloud&logoColor=white) (YouTube Data API v3)                                                            |
 
 ---
 
@@ -103,40 +105,6 @@ brand-communication-nlp-app/
 ```
 
 ---
-
-## 🎯 Case Study Example: Samsung S24 Ultra
-
-This project includes a case study analyzing the **Samsung Galaxy S24 Ultra** launch campaign.
-
-- **Objective**: Understand user reaction to the new AI features and pricing.
-- **Findings**:
-  - ✅ **Positive**: Users love the "Galaxy AI" features and camera zoom.
-  - ❌ **Negative**: Significant complaints about the price hike and trade-in values.
-- **Action**: The tool recommended emphasizing trade-in deals in follow-up FAQs to mitigate price concerns.
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-1.  Fork the Project
-2.  Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3.  Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4.  Push to the Branch (`git push origin feature/AmazingFeature`)
-5.  Open a Pull Request
-
----
-
-## �📬 Contact
-
-**Priyanshu Sharma**
-
-- GitHub: [@PriyanshuKSharma](https://github.com/PriyanshuKSharma)
-
----
-
-## _Built with ❤️ and ☕ using Python._
 
 ## 📚 Detailed Case Study Report
 
@@ -223,3 +191,37 @@ The **Streamlit** web application serves as the interface for these insights.
 - **Deep Learning Sentiment**: Use RoBERTa or DistilBERT for more nuanced sentiment detection (sarcasm, context).
 - **Real-time API**: Connect directly to YouTube/Instagram APIs to fetch live comments.
 - **Named Entity Recognition (NER)**: Automatically detect product names or competitor mentions.
+
+## 🎯 Case Study Example: Samsung S24 Ultra
+
+This project includes a case study analyzing the **Samsung Galaxy S24 Ultra** launch campaign.
+
+- **Objective**: Understand user reaction to the new AI features and pricing.
+- **Findings**:
+  - ✅ **Positive**: Users love the "Galaxy AI" features and camera zoom.
+  - ❌ **Negative**: Significant complaints about the price hike and trade-in values.
+- **Action**: The tool recommended emphasizing trade-in deals in follow-up FAQs to mitigate price concerns.
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1.  Fork the Project
+2.  Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3.  Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4.  Push to the Branch (`git push origin feature/AmazingFeature`)
+5.  Open a Pull Request
+
+---
+
+## �📬 Contact
+
+**Priyanshu Sharma**
+
+- GitHub: [@PriyanshuKSharma](https://github.com/PriyanshuKSharma)
+
+---
+
+## _Built with ❤️ using Python._
