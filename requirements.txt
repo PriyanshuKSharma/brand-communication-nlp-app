@@ -1,0 +1,6 @@
+streamlit
+pandas
+numpy
+textblob
+scikit-learn
+google-api-python-client
