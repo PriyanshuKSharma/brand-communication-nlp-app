@@ -3,7 +3,7 @@
 [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://github.com/PriyanshuKSharma/brand-communication-nlp-app)
 [![Python](https://img.shields.io/badge/Python-3.8%2B-blue?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
 [![NLP](https://img.shields.io/badge/AI-Natural%20Language%20Processing-purple?style=for-the-badge)](https://en.wikipedia.org/wiki/Natural_language_processing)
-[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
+[![License](https://img.shields.io/badge/License-Permission%20Required-orange?style=for-the-badge)](LICENSE)
 
 > **Turn messy social media comments into actionable brand strategy.**
 
