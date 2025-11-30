@@ -218,7 +218,7 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## �📬 Contact
 
-**Priyanshu Sharma**
+**Priyanshu Kumar Sharma**
 
 - GitHub: [@PriyanshuKSharma](https://github.com/PriyanshuKSharma)
 
