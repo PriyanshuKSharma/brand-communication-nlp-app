@@ -151,7 +151,7 @@ elif data_source == "Fetch from YouTube":
         api_key = st.sidebar.text_input("Enter YouTube API Key", type="password", help="Add your key to .streamlit/secrets.toml to avoid entering it here.")
     
     # Input for YouTube Video URL
-    youtube_url = st.sidebar.text_input("YouTube Video URL", value="https://www.youtube.com/watch?v=aq5nS9HkCGY")
+    youtube_url = st.sidebar.text_input("YouTube Video URL", placeholder="https://www.youtube.com/watch?v=YOUR_VIDEO_ID")
     
     if st.sidebar.button("Fetch Comments"):
         if not api_key:
@@ -216,7 +216,15 @@ elif data_source == "Fetch from YouTube":
                             else:
                                 st.sidebar.warning("No comments found or comments are disabled.")
                         except Exception as api_error:
-                             st.sidebar.error(f"YouTube API Error: {api_error}")
+                            error_msg = str(api_error)
+                            if "videoNotFound" in error_msg or "404" in error_msg:
+                                st.sidebar.error(f"❌ Video not found. Please check the Video ID and ensure the video exists and has comments enabled.")
+                            elif "quotaExceeded" in error_msg:
+                                st.sidebar.error(f"❌ API quota exceeded. Please try again later.")
+                            elif "forbidden" in error_msg.lower():
+                                st.sidebar.error(f"❌ Comments are disabled on this video or you don't have access.")
+                            else:
+                                st.sidebar.error(f"YouTube API Error: {api_error}")
 
                 except Exception as e:
                     st.sidebar.error(f"Error: {e}")
