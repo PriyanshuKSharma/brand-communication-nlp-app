@@ -885,6 +885,72 @@ def load_css(theme_mode):
             border: 1px solid rgba(255, 255, 255, 0.12);
         }
 
+        .visual-module {
+            margin-top: 0.95rem;
+            padding: 1rem 1rem 1.05rem;
+            border-radius: 22px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.05));
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            box-shadow: 0 14px 32px rgba(0, 0, 0, 0.10);
+        }
+
+        .visual-module label {
+            display: block;
+            font-size: 0.78rem;
+            font-weight: 800;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.72);
+            margin-bottom: 0.45rem;
+        }
+
+        .visual-module h4 {
+            margin: 0;
+            font-family: 'Fraunces', serif;
+            font-size: 1.12rem;
+            line-height: 1.15;
+        }
+
+        .visual-module p {
+            margin: 0.45rem 0 0 0;
+            color: rgba(255, 255, 255, 0.76);
+            line-height: 1.55;
+            font-size: 0.92rem;
+        }
+
+        .theme-preview {
+            display: flex;
+            gap: 0.45rem;
+            margin-top: 0.85rem;
+        }
+
+        .theme-swatch {
+            flex: 1 1 0;
+            height: 18px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            box-shadow: inset 0 0 0 1px rgba(0,0,0,0.04);
+        }
+
+        .theme-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.45rem;
+            margin-top: 0.75rem;
+        }
+
+        .theme-meta span {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.28rem 0.55rem;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.10);
+            border: 1px solid rgba(255, 255, 255, 0.10);
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #fff8f1;
+        }
+
         .theme-toggle label {
             font-weight: 700;
         }
