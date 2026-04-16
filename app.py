@@ -35,6 +35,7 @@ MODE_LABELS = {
     "Upload CSV": "Upload",
     "Fetch from YouTube": "YouTube",
 }
+MODE_REVERSE_ROUTE = {value: key for key, value in MODE_ROUTE_MAP.items()}
 THEME_OPTIONS = ("Editorial Dawn", "Campaign Night", "Sunset Pulse")
 
 
@@ -268,6 +269,28 @@ def load_css(theme_mode):
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.28);
             backdrop-filter: blur(18px);
             -webkit-backdrop-filter: blur(18px);
+        }
+
+        .floating-nav.hidden {
+            width: auto;
+            padding: 0.5rem 0.65rem;
+            border-radius: 999px;
+        }
+
+        .floating-nav-toggle {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.62rem 0.9rem;
+            border-radius: 999px;
+            text-decoration: none;
+            white-space: nowrap;
+            font-weight: 800;
+            font-size: 0.86rem;
+            color: #f7f4ee !important;
+            border: 1px solid rgba(255, 255, 255, 0.10);
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.92), rgba(255, 145, 83, 0.90));
+            box-shadow: 0 14px 34px rgba(255, 107, 53, 0.24);
         }
 
         .floating-nav-inner {
@@ -2016,6 +2039,31 @@ def render_algorithm_card(title, subtitle, body, bullets):
 
 
 def render_bottom_nav(mode_hint):
+    try:
+        nav_flag = st.query_params.get("nav", None)
+    except Exception:
+        nav_flag = None
+    if isinstance(nav_flag, list):
+        nav_flag = nav_flag[0] if nav_flag else None
+
+    nav_hidden = st.session_state.get("bottom_nav_hidden", False) or nav_flag == "hidden"
+    if nav_flag == "show":
+        nav_hidden = False
+    st.session_state["bottom_nav_hidden"] = nav_hidden
+
+    current_route = MODE_REVERSE_ROUTE.get(mode_hint, "landing")
+
+    if nav_hidden:
+        st.markdown(
+            """
+            <div class="floating-nav hidden" aria-label="Show navigation">
+                <a class="floating-nav-toggle" href="?nav=show&mode={mode}">Show nav</a>
+            </div>
+            """.format(mode=escape_html(current_route)),
+            unsafe_allow_html=True,
+        )
+        return
+
     if mode_hint == "Landing page":
         section_items = [
             ("#top", "Top"),
@@ -2033,10 +2081,10 @@ def render_bottom_nav(mode_hint):
         ]
 
     mode_items = [
-        ("?mode=landing", "Landing page", mode_hint == "Landing page"),
-        ("?mode=sample", "Use sample data", mode_hint == "Use sample data"),
-        ("?mode=upload", "Upload CSV", mode_hint == "Upload CSV"),
-        ("?mode=youtube", "Fetch from YouTube", mode_hint == "Fetch from YouTube"),
+        ("?mode=landing&nav=show", "Landing page", mode_hint == "Landing page"),
+        ("?mode=sample&nav=show", "Use sample data", mode_hint == "Use sample data"),
+        ("?mode=upload&nav=show", "Upload CSV", mode_hint == "Upload CSV"),
+        ("?mode=youtube&nav=show", "Fetch from YouTube", mode_hint == "Fetch from YouTube"),
     ]
 
     mode_links = "".join(
@@ -2063,9 +2111,10 @@ def render_bottom_nav(mode_hint):
                 <span class="floating-nav-divider"></span>
                 <span class="floating-nav-label">Jump to</span>
                 {section_links}
+                <a class="floating-nav-toggle" href="?nav=hidden&mode={mode}">Hide</a>
             </div>
         </div>
-        """.format(mode_links=mode_links, section_links=section_links),
+        """.format(mode_links=mode_links, section_links=section_links, mode=escape_html(current_route)),
         unsafe_allow_html=True,
     )
 
@@ -2862,6 +2911,8 @@ if "youtube_data" not in st.session_state:
     st.session_state["youtube_data"] = None
 if "theme_mode" not in st.session_state:
     st.session_state["theme_mode"] = "Editorial Dawn"
+if "bottom_nav_hidden" not in st.session_state:
+    st.session_state["bottom_nav_hidden"] = False
 
 st.sidebar.markdown("## Brand Intel Studio")
 st.sidebar.markdown(
