@@ -258,65 +258,54 @@ def load_css(theme_mode):
         .floating-nav {
             position: fixed;
             left: 50%;
-            bottom: 18px;
+            bottom: 14px;
             transform: translateX(-50%);
             z-index: 9999;
-            width: min(92vw, 820px);
-            padding: 0.7rem;
-            border-radius: 999px;
-            background: rgba(11, 19, 41, 0.82);
-            border: 1px solid rgba(255, 255, 255, 0.16);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.28);
-            backdrop-filter: blur(18px);
-            -webkit-backdrop-filter: blur(18px);
+            width: min(92vw, 720px);
+            padding: 0.48rem;
+            border-radius: 28px;
+            background: color-mix(in srgb, var(--surface) 82%, transparent);
+            border: 1px solid color-mix(in srgb, var(--border) 74%, transparent);
+            box-shadow: 0 14px 36px rgba(0, 0, 0, 0.16);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
         }
 
         .floating-nav.hidden {
             width: auto;
-            padding: 0.5rem 0.65rem;
-            border-radius: 999px;
-        }
-
-        .floating-nav-toggle {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0.62rem 0.9rem;
-            border-radius: 999px;
-            text-decoration: none;
-            white-space: nowrap;
-            font-weight: 800;
-            font-size: 0.86rem;
-            color: #f7f4ee !important;
-            border: 1px solid rgba(255, 255, 255, 0.10);
-            background: linear-gradient(135deg, rgba(255, 107, 53, 0.92), rgba(255, 145, 83, 0.90));
-            box-shadow: 0 14px 34px rgba(255, 107, 53, 0.24);
+            padding: 0.34rem 0.4rem;
         }
 
         .floating-nav-inner {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            gap: 0.45rem;
+            justify-content: flex-start;
+            gap: 0.28rem;
             overflow-x: auto;
-            padding-bottom: 0.1rem;
+            padding-bottom: 0.04rem;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .floating-nav-inner::-webkit-scrollbar {
+            display: none;
         }
 
         .floating-nav-label {
             flex: 0 0 auto;
-            color: rgba(247, 244, 238, 0.72) !important;
-            font-size: 0.72rem;
+            color: var(--muted) !important;
+            font-size: 0.62rem;
             font-weight: 800;
             letter-spacing: 0.14em;
             text-transform: uppercase;
-            padding: 0 0.25rem;
+            padding: 0 0.12rem;
         }
 
         .floating-nav-divider {
             flex: 0 0 1px;
-            height: 22px;
-            background: rgba(255, 255, 255, 0.12);
-            margin: 0 0.2rem;
+            height: 16px;
+            background: color-mix(in srgb, var(--border) 80%, transparent);
+            margin: 0 0.1rem;
         }
 
         .floating-nav a {
@@ -324,34 +313,57 @@ def load_css(theme_mode):
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 0.4rem;
-            padding: 0.68rem 0.95rem;
+            gap: 0.25rem;
+            padding: 0.44rem 0.72rem;
             border-radius: 999px;
             text-decoration: none;
             white-space: nowrap;
             font-weight: 700;
-            font-size: 0.88rem;
-            color: #f7f4ee !important;
-            border: 1px solid rgba(255, 255, 255, 0.09);
-            background: rgba(255, 255, 255, 0.07);
-            transition: transform 160ms ease, background 160ms ease, border-color 160ms ease;
+            font-size: 0.72rem;
+            color: var(--ink) !important;
+            border: 1px solid color-mix(in srgb, var(--border) 85%, transparent);
+            background: color-mix(in srgb, var(--card) 78%, transparent);
+            transition: transform 160ms ease, background 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
         }
 
         .floating-nav a:hover {
             transform: translateY(-1px);
-            background: rgba(255, 255, 255, 0.12);
-            border-color: rgba(255, 255, 255, 0.16);
+            background: color-mix(in srgb, var(--card) 64%, var(--accent) 10%);
+            border-color: color-mix(in srgb, var(--accent) 36%, var(--border));
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
         }
 
         .floating-nav a.primary {
-            background: linear-gradient(135deg, rgba(255, 107, 53, 0.95), rgba(255, 145, 83, 0.92));
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.96), rgba(255, 145, 83, 0.92));
             color: #fff8f1 !important;
-            border-color: rgba(255, 255, 255, 0.08);
-            box-shadow: 0 10px 24px rgba(255, 107, 53, 0.28);
+            border-color: transparent;
+            box-shadow: 0 10px 22px rgba(255, 107, 53, 0.22);
         }
 
         .floating-nav a.primary:hover {
             background: linear-gradient(135deg, rgba(255, 121, 68, 0.98), rgba(255, 153, 95, 0.96));
+        }
+
+        @media (max-width: 720px) {
+            .floating-nav {
+                width: min(94vw, 100%);
+                padding: 0.4rem;
+                border-radius: 22px;
+            }
+
+            .floating-nav-inner {
+                gap: 0.2rem;
+            }
+
+            .floating-nav-label {
+                font-size: 0.56rem;
+                letter-spacing: 0.12em;
+            }
+
+            .floating-nav a {
+                padding: 0.38rem 0.62rem;
+                font-size: 0.68rem;
+            }
         }
 
         .stButton > button,
@@ -2039,29 +2051,8 @@ def render_algorithm_card(title, subtitle, body, bullets):
 
 
 def render_bottom_nav(mode_hint):
-    try:
-        nav_flag = st.query_params.get("nav", None)
-    except Exception:
-        nav_flag = None
-    if isinstance(nav_flag, list):
-        nav_flag = nav_flag[0] if nav_flag else None
-
-    nav_hidden = st.session_state.get("bottom_nav_hidden", False) or nav_flag == "hidden"
-    if nav_flag == "show":
-        nav_hidden = False
-    st.session_state["bottom_nav_hidden"] = nav_hidden
-
-    current_route = MODE_REVERSE_ROUTE.get(mode_hint, "landing")
-
+    nav_hidden = st.session_state.get("bottom_nav_hidden", False)
     if nav_hidden:
-        st.markdown(
-            """
-            <div class="floating-nav hidden" aria-label="Show navigation">
-                <a class="floating-nav-toggle" href="?nav=show&mode={mode}">Show nav</a>
-            </div>
-            """.format(mode=escape_html(current_route)),
-            unsafe_allow_html=True,
-        )
         return
 
     if mode_hint == "Landing page":
@@ -2081,11 +2072,12 @@ def render_bottom_nav(mode_hint):
         ]
 
     mode_items = [
-        ("?mode=landing&nav=show", "Landing page", mode_hint == "Landing page"),
-        ("?mode=sample&nav=show", "Use sample data", mode_hint == "Use sample data"),
-        ("?mode=upload&nav=show", "Upload CSV", mode_hint == "Upload CSV"),
-        ("?mode=youtube&nav=show", "Fetch from YouTube", mode_hint == "Fetch from YouTube"),
+        ("?mode=landing", "Landing", mode_hint == "Landing page"),
+        ("?mode=sample", "Sample", mode_hint == "Use sample data"),
+        ("?mode=upload", "Upload", mode_hint == "Upload CSV"),
+        ("?mode=youtube", "YouTube", mode_hint == "Fetch from YouTube"),
     ]
+    active_mode = next((label for href, label, active in mode_items if active), "Landing page")
 
     mode_links = "".join(
         "<a class='{cls}' href='{href}'>{label}</a>".format(
@@ -2106,15 +2098,14 @@ def render_bottom_nav(mode_hint):
         """
         <div class="floating-nav" aria-label="Quick navigation">
             <div class="floating-nav-inner">
-                <span class="floating-nav-label">Mode</span>
-                {mode_links}
+                <span class="floating-nav-label">Workspace</span>
+                <a class="primary" href="?mode={mode}">{active_mode}</a>
                 <span class="floating-nav-divider"></span>
-                <span class="floating-nav-label">Jump to</span>
+                <span class="floating-nav-label">Sections</span>
                 {section_links}
-                <a class="floating-nav-toggle" href="?nav=hidden&mode={mode}">Hide</a>
             </div>
         </div>
-        """.format(mode_links=mode_links, section_links=section_links, mode=escape_html(current_route)),
+        """.format(active_mode=escape_html(active_mode), mode=escape_html(MODE_ROUTE_MAP.get(st.session_state.get("data_source", "Landing page"), "landing")), section_links=section_links),
         unsafe_allow_html=True,
     )
 
@@ -2133,6 +2124,10 @@ def set_data_source(mode):
             st.query_params["mode"] = route
         except Exception:
             pass
+
+
+def toggle_bottom_nav():
+    st.session_state["bottom_nav_hidden"] = not st.session_state.get("bottom_nav_hidden", False)
 
 
 def render_landing_page(mode_hint):
@@ -2929,6 +2924,13 @@ st.sidebar.markdown(
     """,
     unsafe_allow_html=True,
 )
+
+st.sidebar.button(
+    "Hide bottom nav" if not st.session_state.get("bottom_nav_hidden", False) else "Show bottom nav",
+    width="stretch",
+    on_click=toggle_bottom_nav,
+)
+
 st.sidebar.markdown(
     """
     <div class="upload-note">
