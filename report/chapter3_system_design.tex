@@ -1,82 +1,207 @@
 \chapter{System Design}
 
+\section{Overview}
+Brand Intel is designed as an explainable social media intelligence studio for marketing and communication teams. The application converts raw comment streams into structured signals that can be used for campaign optimization, customer support planning, and future content ideas. Rather than exposing only model outputs, the system emphasizes interpretability through clear dashboards, narrative summaries, and recommended next actions.
+
+The system is implemented as a single Streamlit application with a modular Python backend. This approach keeps the product lightweight for demos while still separating the interface, processing logic, and data preparation steps. The result is a small but complete analytics product that can be run locally, extended incrementally, and presented as a polished prototype.
+
+\section{System Requirements}
+The project was designed around the following functional and non-functional requirements:
+
+\subsection{Functional Requirements}
+\begin{itemize}
+    \item Accept comment data from a CSV file, a sample dataset, or YouTube comments fetched via API.
+    \item Require at least one field, \texttt{comment\_text}, so the analysis pipeline can always operate on a usable text column.
+    \item Support optional metadata such as \texttt{platform}, \texttt{likes}, and \texttt{timestamp} for richer analysis.
+    \item Compute sentiment summaries, topic clusters, keyword patterns, and strategic recommendations.
+    \item Present the output through a landing page, a dashboard, and an explainable algorithm reference section.
+\end{itemize}
+
+\subsection{Non-Functional Requirements}
+\begin{itemize}
+    \item Keep the interface responsive on desktop and mobile screens.
+    \item Preserve a polished visual identity with theme switching and a floating navigation bar.
+    \item Avoid heavy configuration overhead so the app remains easy to launch locally.
+    \item Make the analysis explainable so users can understand why a topic or recommendation was produced.
+\end{itemize}
+
 \section{System Architecture}
-The architecture of \textbf{Brand Intel} follows a modular, three-tier design pattern comprising the Presentation Layer, the Application Logic Layer, and the Data Layer. This separation of concerns ensures maintainability and scalability.
+The architecture of Brand Intel follows a three-layer design: Presentation Layer, Application Logic Layer, and Data/Inference Layer. This separation of concerns keeps the code easier to maintain and makes it possible to refine the UI without rewriting the analysis pipeline.
 
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[node distance=0.5cm]
-    % Nodes
-    \node (user) [rectangle, draw=black, fill=blue!10, minimum size=1cm] {User (Brand Manager)};
-    \node (ui) [rectangle, draw=black, fill=green!10, minimum width=3cm, minimum height=1cm, below=of user] {Streamlit Frontend};
-    \node (backend) [rectangle, draw=black, fill=orange!10, minimum width=4cm, minimum height=1cm, below=of ui] {Python Backend (app.py)};
-    \node (nlp) [rectangle, draw=black, fill=red!10, minimum width=4cm, minimum height=1cm, below=of backend] {NLP Engine (nlp\_utils.py)};
-    \node (api) [rectangle, draw=black, fill=yellow!10, minimum width=3cm, minimum height=1cm, right=of backend, xshift=2cm] {YouTube Data API};
-    \node (db) [cylinder, draw=black, fill=gray!10, shape border rotate=90, aspect=0.25, minimum height=1.5cm, minimum width=1.5cm, left=of backend, xshift=-2cm] {Data Storage (CSV)};
+\begin{tikzpicture}[node distance=0.55cm]
+    \node (user) [rectangle, draw=black, fill=blue!10, minimum width=3.4cm, minimum height=1cm] {User / Marketing Team};
+    \node (ui) [rectangle, draw=black, fill=green!10, minimum width=4.2cm, minimum height=1cm, below=of user] {Streamlit UI + Theme System};
+    \node (app) [rectangle, draw=black, fill=orange!10, minimum width=4.2cm, minimum height=1cm, below=of ui] {\texttt{app.py} Orchestration Layer};
+    \node (nlp) [rectangle, draw=black, fill=red!10, minimum width=4.2cm, minimum height=1cm, below=of app] {\texttt{nlp\_utils.py} NLP and Topic Logic};
+    \node (api) [rectangle, draw=black, fill=yellow!18, minimum width=3.4cm, minimum height=1cm, right=of app, xshift=2.5cm] {YouTube Data API};
+    \node (data) [cylinder, draw=black, fill=gray!15, shape border rotate=90, aspect=0.25, minimum height=1.5cm, minimum width=1.8cm, left=of app, xshift=-2.6cm] {CSV / Sample Data};
 
-    % Arrows
     \draw[->, thick] (user) -- (ui);
-    \draw[->, thick] (ui) -- (backend);
-    \draw[<->, thick] (backend) -- (api);
-    \draw[<->, thick] (backend) -- (nlp);
-    \draw[<->, thick] (backend) -- (db);
+    \draw[->, thick] (ui) -- (app);
+    \draw[<->, thick] (app) -- (api);
+    \draw[<->, thick] (app) -- (nlp);
+    \draw[<->, thick] (app) -- (data);
 \end{tikzpicture}
-\caption{High-Level System Architecture of Brand Intel}
+\caption{High-level architecture of the Brand Intel system}
 \label{fig:arch}
 \end{figure}
 
-\subsection{Component Description}
+\subsection{Presentation Layer}
+The presentation layer is implemented with Streamlit. It provides the landing page, analysis dashboard, theme selector, bottom navigation, and data entry widgets. The UI is intentionally marketing-oriented: it uses a product-style hero section, visual cards, and a consistent palette system to make the tool feel like a real campaign intelligence product rather than a bare technical demo.
+
+\subsection{Application Logic Layer}
+The application logic is concentrated in \texttt{app.py}. This file manages the UI flow, session state, routing between data sources, sidebar controls, and chart rendering. It also coordinates the calls into the NLP layer and converts intermediate results into human-readable dashboard cards and recommendations.
+
+\subsection{Data/Inference Layer}
+The data and inference layer is responsible for parsing input, cleaning text, computing sentiment, clustering comments into topics, extracting frequent terms, and generating interpretive summaries. The logic here is kept mostly functional so that each transformation is easy to test and reason about.
+
+\section{Data Model and Input Contract}
+The system expects a comment-level dataset. The minimal required schema contains a single field:
 \begin{itemize}
-    \item \textbf{Streamlit Frontend:} The user interface is built using Streamlit, which renders interactive widgets (sliders, text inputs) and data visualizations (charts, tables) directly from Python scripts.
-    \item \textbf{Python Backend:} The core logic resides in \texttt{app.py}. It orchestrates the flow of data between the user inputs, the API, and the processing modules.
-    \item \textbf{YouTube Data API:} An external service used to fetch real-time comments. The system authenticates using an API key stored securely in \texttt{.streamlit/secrets.toml}.
-    \item \textbf{NLP Engine:} Located in \texttt{nlp\_utils.py}, this module contains the pure functions for text cleaning, sentiment scoring (TextBlob), and topic modeling (Scikit-learn).
+    \item \texttt{comment\_text}: the raw user comment to be analyzed.
 \end{itemize}
 
-\section{Data Flow Workflow}
-The data processing pipeline is the heart of the application. It transforms raw, unstructured text into structured insights. The workflow proceeds sequentially as follows:
+Optional fields enrich the analysis without being mandatory:
+\begin{itemize}
+    \item \texttt{platform}: the source platform such as YouTube, Instagram, or TikTok.
+    \item \texttt{likes}: a popularity indicator that can be used for filtering and prioritization.
+    \item \texttt{timestamp}: the time the comment was posted.
+    \item \texttt{published\_at}: a compatible time field used when the source data provides it.
+\end{itemize}
+
+This flexible input contract makes the application useful for both real campaigns and synthetic demo datasets. If optional columns are missing, the app fills in safe defaults and still completes the analysis.
+
+\section{Data Flow Pipeline}
+The application transforms raw text into insights using a staged pipeline. Each step has a clearly defined role so the output remains interpretable.
 
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[node distance=1.5cm, auto]
-    % Styles
-    \tikzstyle{block} = [rectangle, draw, fill=blue!20, text width=5em, text centered, rounded corners, minimum height=4em]
+\begin{tikzpicture}[node distance=1.35cm]
+    \tikzstyle{block} = [rectangle, draw, fill=blue!15, rounded corners, minimum width=4.2cm, minimum height=0.95cm, align=center]
     \tikzstyle{line} = [draw, -latex']
-    \tikzstyle{cloud} = [draw, ellipse, fill=red!20, node distance=3cm, minimum height=2em]
-    
-    % Nodes
-    \node [block] (input) {Raw Comments};
-    \node [block, below of=input, node distance=2.5cm] (clean) {Text Cleaning};
-    \node [block, below of=clean, node distance=2.5cm] (sentiment) {Sentiment Analysis};
-    \node [block, below of=sentiment, node distance=2.5cm] (vector) {TF-IDF Vectorization};
-    \node [block, below of=vector, node distance=2.5cm] (cluster) {K-Means Clustering};
-    \node [block, below of=cluster, node distance=2.5cm] (viz) {Visualization};
-    
-    % Edges
-    \path [line] (input) -- node {Input} (clean);
-    \path [line] (clean) -- node {Clean Text} (sentiment);
-    \path [line] (sentiment) -- node {Scores} (vector);
-    \path [line] (vector) -- node {Vectors} (cluster);
-    \path [line] (cluster) -- node {Topics} (viz);
-    
-    % Annotations
-    \node [right of=clean, node distance=4cm, text width=4cm] (note1) {\small Remove URLs, emojis, stopwords, lowercase.};
-    \draw [dashed] (clean) -- (note1);
 
-    \node [right of=sentiment, node distance=4cm, text width=4cm] (note2) {\small Polarity Score (-1 to +1).};
-    \draw [dashed] (sentiment) -- (note2);
-    
-    \node [right of=cluster, node distance=4cm, text width=4cm] (note3) {\small Group comments into $K$ topics.};
-    \draw [dashed] (cluster) -- (note3);
+    \node [block] (input) {Comment Ingestion};
+    \node [block, below=of input] (clean) {Text Cleaning and Normalization};
+    \node [block, below=of clean] (sentiment) {Sentiment Scoring with TextBlob};
+    \node [block, below=of sentiment] (vector) {TF-IDF Feature Extraction};
+    \node [block, below=of vector] (cluster) {K-Means Topic Discovery};
+    \node [block, below=of cluster] (summary) {Explainable Dashboard and Strategy Cards};
 
+    \path [line] (input) -- (clean);
+    \path [line] (clean) -- (sentiment);
+    \path [line] (sentiment) -- (vector);
+    \path [line] (vector) -- (cluster);
+    \path [line] (cluster) -- (summary);
 \end{tikzpicture}
-\caption{Data Processing Workflow}
+\caption{Comment-to-insight workflow}
 \label{fig:workflow}
 \end{figure}
 
-\section{Design Decisions}
-\subsection{Choice of Framework: Streamlit}
-Streamlit was selected over alternatives like Flask or Django because of its "data-first" philosophy. It allows for rapid prototyping of data applications without the need for writing HTML/CSS or managing complex state, which aligns with the project's goal of creating a tool for analysts rather than web developers.
+\subsection{Step 1: Comment Ingestion}
+The ingestion layer accepts CSV uploads, sample data, or YouTube API responses. The data is converted to a common internal format so the rest of the system can operate on the same column names regardless of source.
 
-\subsection{Choice of Algorithm: K-Means}
-For topic modeling, K-Means was chosen over Latent Dirichlet Allocation (LDA). While LDA is powerful, it is computationally expensive and often produces overlapping topics on short text. K-Means, when combined with TF-IDF, produces hard clusters which are easier to interpret for the specific use case of categorizing customer complaints (e.g., a comment is either about "Price" or "Battery", rarely both in a short sentence).
+\subsection{Step 2: Text Cleaning}
+The system removes URLs, punctuation noise, repeated whitespace, and non-informative tokens. This improves the quality of both sentiment analysis and topic clustering. The cleaning stage is deliberately conservative so meaningful language is not discarded.
+
+\subsection{Step 3: Sentiment Analysis}
+Sentiment is computed using TextBlob polarity scores. The polarity value is then mapped into positive, neutral, or negative labels. This gives the dashboard a fast aggregate view of the overall mood and allows the strategy layer to prioritize negative or strongly emotional themes.
+
+\subsection{Step 4: Feature Extraction}
+TF-IDF converts the cleaned text into weighted term vectors. Terms that occur frequently in a small subset of comments receive higher weight, which helps the clustering stage identify meaningful marketing themes instead of generic words.
+
+\subsection{Step 5: Topic Discovery}
+K-Means clustering groups comments by vocabulary similarity. The resulting clusters are used as narrative lanes or topic cards in the dashboard. Each lane is explained through a readable label, a tone indicator, sample comments, and keyword chips so the topic can be understood without looking at raw vectors.
+
+\subsection{Step 6: Strategy Synthesis}
+The final layer converts the analytics into action-oriented suggestions. If a topic is negative, the system recommends fixes such as FAQs, proof points, or support content. If a topic is positive, it recommends amplification through testimonials, hooks, or campaign reuse. If a topic contains multiple questions, the system suggests a fast-response content block.
+
+\section{Algorithms and Analytical Methods}
+The project intentionally combines simple, dependable methods rather than relying on a single black-box model. This keeps the output fast, explainable, and suitable for marketing teams.
+
+\subsection{Sentiment Analysis with TextBlob}
+TextBlob provides a lightweight polarity model that works well for a first-pass emotional readout. Each comment receives a score between -1 and +1. The system aggregates these scores to produce brand heat, positive lift, negative share, and neutral share metrics.
+
+\subsection{Topic Discovery with TF-IDF and K-Means}
+Topic modeling uses TF-IDF followed by K-Means clustering. The TF-IDF stage captures the most informative terms, while K-Means partitions the comments into a user-defined number of narrative lanes. This choice is appropriate for short social comments because it is easier to explain than probabilistic topic models and usually produces crisp, actionable clusters.
+
+\subsection{Question and Concern Detection}
+The app identifies question-heavy comments and repeated concern patterns using keyword heuristics. This step supports the strategy layer by surfacing open loops, recurring objections, and support requests that require fast brand responses.
+
+\subsection{Keyword and Frequency Analysis}
+Common terms are extracted to reveal the language that the audience uses most often. These terms help the brand understand which words are dominant, which phrases repeat across comments, and which descriptors might be useful in future messaging.
+
+\section{Explainability Layer}
+One of the core design goals of the project is explainability. The dashboard is not meant to be a silent model output; it is meant to explain the reasoning behind each analytical view.
+
+\subsection{Metrics with Plain-English Labels}
+Rather than showing only raw percentages, the app pairs metrics with descriptive text. For example, a positive lift metric is accompanied by a short explanation of what it means for the campaign and how it should shape the next action.
+
+\subsection{Topic Cards}
+Each topic card displays:
+\begin{itemize}
+    \item a topic label,
+    \item a tone badge such as positive, mixed, or friction point,
+    \item the number and share of comments in the cluster,
+    \item the top keywords that define the lane,
+    \item and example comments that justify the interpretation.
+\end{itemize}
+
+\subsection{Strategy Cards}
+The strategy section transforms findings into actions grouped by urgency:
+\begin{itemize}
+    \item \textbf{Act now}: issues that need immediate repair or clarification.
+    \item \textbf{Amplify}: language and themes that should be reused in marketing.
+    \item \textbf{Watch next}: patterns that should be monitored over time.
+\end{itemize}
+
+\subsection{Future Insights and Proposals}
+The application also extends beyond retrospective analysis. It projects likely follow-up actions, such as content opportunities, FAQ demand, and momentum tracking. This gives the report a future-facing angle instead of limiting it to current-state analytics.
+
+\section{User Experience and Responsive Design}
+The UI was designed as a product experience rather than a standard data dashboard.
+
+\subsection{Landing Page}
+The landing page explains what the project does, which algorithms are used, and why the tool matters to marketing teams. It also sets the tone visually through a premium hero section, feature cards, and a clear narrative about future insights.
+
+\subsection{Theme System}
+The app includes multiple visual modes so the same product can feel different depending on context. This supports both presentation and analysis use cases. The theme switching also improves demo value because the app can be shown in a brighter editorial style or a darker campaign-night style.
+
+\subsection{Mobile Friendliness}
+The layout uses responsive spacing, compact cards, and a floating bottom navbar that collapses well on smaller screens. This ensures the interface remains usable on phones without losing its visual structure.
+
+\subsection{Bottom Navigation}
+The floating bottom nav provides quick access to workspace modes and key dashboard sections. It acts as a lightweight product dock, helping users move through the app without having to scroll excessively.
+
+\section{Configuration and Security}
+The system keeps credentials and environment-specific values outside the main codebase.
+
+\subsection{Secrets Management}
+The YouTube API key is expected through Streamlit secrets. This prevents accidental exposure of credentials inside source files and allows the project to be shared safely as a public prototype.
+
+\subsection{Graceful Fallbacks}
+If secrets are missing or data columns are incomplete, the application falls back to safe defaults instead of crashing. This is important for demo reliability and makes the app easier to use for first-time reviewers.
+
+\section{Design Decisions}
+\subsection{Choice of Streamlit}
+Streamlit was chosen because it is well suited for rapid analytical applications. It minimizes UI boilerplate, keeps the codebase compact, and allows the dashboard to be maintained entirely in Python. For a research or product prototype, this is significantly faster than building a full custom web frontend.
+
+\subsection{Choice of K-Means}
+K-Means was selected over more complex probabilistic topic models because the comments are short and need to be interpretable quickly. Hard clustering is easier to present to non-technical stakeholders and works well for the dashboard's lane-based storytelling.
+
+\subsection{Choice of Rule-Based Strategy Generation}
+The recommendation layer uses rule-based logic instead of a learned generation model. This is intentional: strategy suggestions must remain predictable, explainable, and aligned with visible evidence from the data.
+
+\section{Limitations and Future Work}
+Although the current implementation is practical and explainable, several enhancements could make it more powerful:
+\begin{itemize}
+    \item Replace TextBlob with a transformer-based sentiment model for deeper nuance.
+    \item Upgrade topic discovery to BERTopic or another embedding-based clustering approach.
+    \item Add historical trend tracking so the app can compare campaigns over time.
+    \item Introduce exportable report pages for PDF or slide-friendly summaries.
+    \item Expand the visualization layer with more annotated graphs and richer forecast views.
+\end{itemize}
+
+\section{Conclusion}
+The system design of Brand Intel balances usability, explainability, and implementation simplicity. By combining Streamlit, lightweight NLP methods, and a clear recommendation layer, the project becomes more than a sentiment tool: it becomes a campaign intelligence assistant that helps marketing teams understand audience reaction, identify narrative patterns, and plan the next move with confidence.
