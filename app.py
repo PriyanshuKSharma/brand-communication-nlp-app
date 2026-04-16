@@ -187,6 +187,61 @@ def load_css(theme_mode):
             border: 1px solid rgba(255, 255, 255, 0.12);
         }
 
+        section[data-testid="stSidebar"] [data-testid="stRadio"],
+        section[data-testid="stSidebar"] [data-testid="stSelectbox"],
+        section[data-testid="stSidebar"] [data-testid="stMultiSelect"],
+        section[data-testid="stSidebar"] [data-testid="stSlider"],
+        section[data-testid="stSidebar"] [data-testid="stTextInput"],
+        section[data-testid="stSidebar"] [data-testid="stFileUploader"] {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.10);
+            border-radius: 18px;
+            padding: 0.7rem 0.8rem 0.55rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .sidebar-panel {
+            margin: 0.9rem 0 1rem;
+            padding: 1rem 1rem 1.05rem;
+            border-radius: 22px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.05));
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            box-shadow: 0 14px 32px rgba(0, 0, 0, 0.10);
+        }
+
+        .sidebar-panel h4 {
+            margin: 0 0 0.4rem 0;
+            font-family: 'Fraunces', serif;
+            font-size: 1.08rem;
+            line-height: 1.15;
+        }
+
+        .sidebar-panel p {
+            margin: 0;
+            color: rgba(247, 244, 238, 0.80);
+            line-height: 1.55;
+            font-size: 0.92rem;
+        }
+
+        .sidebar-chip-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.45rem;
+            margin-top: 0.75rem;
+        }
+
+        .sidebar-chip {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.28rem 0.56rem;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.10);
+            border: 1px solid rgba(255, 255, 255, 0.10);
+            color: #fff8f1;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
         .stButton > button,
         .stDownloadButton > button {
             border-radius: 999px !important;
@@ -2517,6 +2572,20 @@ if "theme_mode" not in st.session_state:
 st.sidebar.markdown("## Brand Intel Studio")
 st.sidebar.markdown(
     """
+    <div class="sidebar-panel">
+        <h4>Explainable brand intelligence</h4>
+        <p>Turn comment streams into sentiment signals, topic clusters, future insights, and marketing proposals. Every chart is paired with an explanation so the story is easy to trust and act on.</p>
+        <div class="sidebar-chip-row">
+            <span class="sidebar-chip">Sentiment</span>
+            <span class="sidebar-chip">Topics</span>
+            <span class="sidebar-chip">Forecasts</span>
+        </div>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
+st.sidebar.markdown(
+    """
     <div class="upload-note">
         <strong>Turn comment streams into brand direction.</strong><br><br>
         <div class="schema-row">
@@ -2606,15 +2675,33 @@ st.sidebar.markdown(
 
 load_css(theme_mode)
 
+st.sidebar.markdown(
+    """
+    <div class="sidebar-panel">
+        <h4>Choose your workspace</h4>
+        <p>Start from a landing page, load sample data, upload a CSV, or connect YouTube comments for live analysis.</p>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
+
 data_source = st.sidebar.radio("Experience mode", SOURCE_OPTIONS, key="data_source")
 source_df = None
 source_label = "Campaign dataset"
 
 if data_source == "Landing page":
-    st.sidebar.info("Start with inspiration mode, or switch to sample, CSV, or YouTube when you want live analysis.")
+    st.sidebar.markdown(
+        """
+        <div class="sidebar-panel">
+            <h4>Inspiration mode</h4>
+            <p>Explore the product story first, or jump into real analysis when you are ready.</p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
     st.sidebar.button(
         "Open sample cockpit",
-        use_container_width=True,
+        width="stretch",
         on_click=set_data_source,
         args=("Use sample data",),
     )
@@ -2625,6 +2712,15 @@ elif data_source == "Use sample data":
     st.sidebar.success("Demo dataset loaded.")
 
 elif data_source == "Upload CSV":
+    st.sidebar.markdown(
+        """
+        <div class="sidebar-panel">
+            <h4>Upload a CSV</h4>
+            <p>A single file with <code>comment_text</code> is enough. Add <code>platform</code>, <code>likes</code>, and <code>timestamp</code> for richer insights.</p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
     uploaded_file = st.sidebar.file_uploader(
         "Upload a comment dataset",
         type=["csv"],
@@ -2637,7 +2733,15 @@ elif data_source == "Upload CSV":
 
 elif data_source == "Fetch from YouTube":
     source_label = "YouTube live sync"
-    st.sidebar.markdown("### YouTube connector")
+    st.sidebar.markdown(
+        """
+        <div class="sidebar-panel">
+            <h4>YouTube connector</h4>
+            <p>Pull live comments from a video and turn audience reaction into a campaign readout.</p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
     default_key = ""
     try:
@@ -2661,7 +2765,7 @@ elif data_source == "Fetch from YouTube":
     )
     max_comments = st.sidebar.slider("Comments to fetch", 100, 500, 300, 50)
 
-    if st.sidebar.button("Fetch comments", use_container_width=True):
+    if st.sidebar.button("Fetch comments", width="stretch"):
         if not api_key:
             st.sidebar.error("Add a YouTube API key to fetch live comments.")
         elif not youtube_input:
@@ -2689,7 +2793,15 @@ if source_df is not None:
     if "comment_text" not in source_df.columns:
         st.error("The dataset needs a comment_text column before I can build the experience.")
     else:
-        st.sidebar.markdown("### Analysis controls")
+        st.sidebar.markdown(
+            """
+            <div class="sidebar-panel">
+                <h4>Analysis controls</h4>
+                <p>Shape the signal by platform, engagement, keywords, and the number of narrative lanes.</p>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
 
         working_df = source_df.copy()
         if "platform" not in working_df.columns:
@@ -2717,11 +2829,11 @@ if source_df is not None:
         )
 
         keyword_filter = st.sidebar.text_input(
-            "Only include comments matching",
+            "Keyword focus",
             placeholder="delivery, pricing, support",
         )
         requested_topics = st.sidebar.slider(
-            "Narrative clusters",
+            "Topic lanes",
             min_value=2,
             max_value=8,
             value=4,
