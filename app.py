@@ -2142,8 +2142,60 @@ theme_caption = {
     "Sunset Pulse": "Warm, modern, and brand-forward.",
 }.get(theme_mode, "Bright, premium, and airy.")
 
+theme_palette = {
+    "Editorial Dawn": {
+        "swatches": ["#ff6b35", "#138a72", "#f2a900"],
+        "descriptor": "Clean editorial palette",
+        "chips": ["Soft light", "Warm accent", "Fresh balance"],
+    },
+    "Campaign Night": {
+        "swatches": ["#ff8a5b", "#25c79b", "#ffcb57"],
+        "descriptor": "High-contrast campaign mode",
+        "chips": ["Dark canvas", "Live signal", "Premium contrast"],
+    },
+    "Sunset Pulse": {
+        "swatches": ["#ff7a4e", "#7e57c2", "#ffb703"],
+        "descriptor": "Warm story-driven palette",
+        "chips": ["Amber glow", "Modern warmth", "Brand-forward"],
+    },
+}.get(theme_mode, {
+    "swatches": ["#ff6b35", "#138a72", "#f2a900"],
+    "descriptor": "Clean editorial palette",
+    "chips": ["Soft light", "Warm accent", "Fresh balance"],
+})
+
 st.sidebar.markdown(
     f"<div class='theme-toggle'><label>Theme mood</label><br><small>{escape_html(theme_caption)}</small></div>",
+    unsafe_allow_html=True,
+)
+
+st.sidebar.markdown(
+    """
+    <div class="visual-module">
+        <label>Selected palette</label>
+        <h4>{descriptor}</h4>
+        <p>{caption}</p>
+        <div class="theme-preview">
+            <span class="theme-swatch" style="background:{s1};"></span>
+            <span class="theme-swatch" style="background:{s2};"></span>
+            <span class="theme-swatch" style="background:{s3};"></span>
+        </div>
+        <div class="theme-meta">
+            <span>{chip1}</span>
+            <span>{chip2}</span>
+            <span>{chip3}</span>
+        </div>
+    </div>
+    """.format(
+        descriptor=escape_html(theme_palette["descriptor"]),
+        caption=escape_html(theme_caption),
+        s1=escape_html(theme_palette["swatches"][0]),
+        s2=escape_html(theme_palette["swatches"][1]),
+        s3=escape_html(theme_palette["swatches"][2]),
+        chip1=escape_html(theme_palette["chips"][0]),
+        chip2=escape_html(theme_palette["chips"][1]),
+        chip3=escape_html(theme_palette["chips"][2]),
+    ),
     unsafe_allow_html=True,
 )
 
