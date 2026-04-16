@@ -139,7 +139,7 @@ def load_css(theme_mode):
         .block-container {
             max-width: 1380px;
             padding-top: 2.2rem;
-            padding-bottom: 4rem;
+            padding-bottom: 7rem;
         }
 
         html,
@@ -240,6 +240,66 @@ def load_css(theme_mode):
             color: #fff8f1;
             font-size: 0.8rem;
             font-weight: 700;
+        }
+
+        .floating-nav {
+            position: fixed;
+            left: 50%;
+            bottom: 18px;
+            transform: translateX(-50%);
+            z-index: 9999;
+            width: min(92vw, 820px);
+            padding: 0.7rem;
+            border-radius: 999px;
+            background: rgba(11, 19, 41, 0.82);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.28);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+        }
+
+        .floating-nav-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.45rem;
+            overflow-x: auto;
+            padding-bottom: 0.1rem;
+        }
+
+        .floating-nav a {
+            flex: 1 0 auto;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+            padding: 0.68rem 0.95rem;
+            border-radius: 999px;
+            text-decoration: none;
+            white-space: nowrap;
+            font-weight: 700;
+            font-size: 0.88rem;
+            color: #f7f4ee !important;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.06);
+            transition: transform 160ms ease, background 160ms ease, border-color 160ms ease;
+        }
+
+        .floating-nav a:hover {
+            transform: translateY(-1px);
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.16);
+        }
+
+        .floating-nav a.primary {
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.95), rgba(255, 145, 83, 0.92));
+            color: #fff8f1 !important;
+            border-color: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 10px 24px rgba(255, 107, 53, 0.28);
+        }
+
+        .floating-nav a.primary:hover {
+            background: linear-gradient(135deg, rgba(255, 121, 68, 0.98), rgba(255, 153, 95, 0.96));
         }
 
         .stButton > button,
@@ -1112,6 +1172,18 @@ def load_css(theme_mode):
                 padding-bottom: 2.5rem;
             }
 
+            .floating-nav {
+                bottom: 10px;
+                width: min(96vw, 760px);
+                border-radius: 24px;
+                padding: 0.55rem;
+            }
+
+            .floating-nav a {
+                padding: 0.62rem 0.85rem;
+                font-size: 0.82rem;
+            }
+
             .hero-shell {
                 padding: 1.25rem;
                 border-radius: 24px;
@@ -1203,6 +1275,22 @@ def load_css(theme_mode):
             .block-container {
                 padding-left: 0.65rem;
                 padding-right: 0.65rem;
+            }
+
+            .floating-nav {
+                left: 50%;
+                bottom: 8px;
+                width: calc(100vw - 1rem);
+                border-radius: 20px;
+            }
+
+            .floating-nav-inner {
+                gap: 0.35rem;
+            }
+
+            .floating-nav a {
+                padding: 0.58rem 0.7rem;
+                font-size: 0.74rem;
             }
 
             .hero-title {
@@ -1906,6 +1994,42 @@ def render_algorithm_card(title, subtitle, body, bullets):
     )
 
 
+def render_floating_nav(mode_hint):
+    if mode_hint == "Landing page":
+        items = [
+            ("#top", "Top", True),
+            ("#project-overview", "Overview", False),
+            ("#methods-overview", "Algorithms", False),
+            ("#input-shape", "Input", False),
+            ("#future-insights", "Insights", False),
+        ]
+    else:
+        items = [
+            ("#top", "Top", True),
+            ("#mission-control", "Mission", False),
+            ("#topic-radar", "Topics", False),
+            ("#algorithm-lab", "Methods", False),
+            ("#strategy-studio", "Strategy", False),
+        ]
+
+    nav_links = "".join(
+        "<a class='{cls}' href='{href}'>{label}</a>".format(
+            cls="primary" if is_primary else "",
+            href=escape_html(href),
+            label=escape_html(label),
+        )
+        for href, label, is_primary in items
+    )
+    st.markdown(
+        """
+        <div class="floating-nav" aria-label="Quick navigation">
+            <div class="floating-nav-inner">{links}</div>
+        </div>
+        """.format(links=nav_links),
+        unsafe_allow_html=True,
+    )
+
+
 def set_data_source(mode):
     st.session_state["data_source"] = mode
 
@@ -1937,6 +2061,7 @@ def render_landing_page(mode_hint):
 
     st.markdown(
         """
+        <div id="top"></div>
         <div class="hero-shell">
             <div class="hero-grid">
                 <div>
@@ -2016,6 +2141,7 @@ def render_landing_page(mode_hint):
 
     st.markdown(
         """
+        <div id="project-overview"></div>
         <div class="section-label accent" style="margin-top:2.45rem;">What this project does</div>
         <div class="section-hero" style="margin-top:0; margin-bottom:1rem;">
             <div>
@@ -2133,6 +2259,7 @@ def render_landing_page(mode_hint):
 
     st.markdown(
         """
+        <div id="methods-overview"></div>
         <div class="section-label secondary" style="margin-top:2.6rem;">How it works</div>
         <div class="section-hero" style="margin-top:0; margin-bottom:1.2rem;">
             <div>
@@ -2180,6 +2307,7 @@ def render_landing_page(mode_hint):
 
     st.markdown(
         """
+        <div id="input-shape"></div>
         <div class="section-label accent" style="margin-top:2.4rem;">Input shape</div>
         <div class="data-card">
             <div class="feature-kicker gold">What the app expects</div>
@@ -2218,6 +2346,7 @@ def render_dashboard(df, topic_keywords, actual_topics, source_label):
 
     st.markdown(
         """
+        <div id="top"></div>
         <div class="hero-shell">
             <div class="eyebrow">{source_label}</div>
             <div class="hero-title">Your audience is telling you what to say next.</div>
@@ -2275,6 +2404,7 @@ def render_dashboard(df, topic_keywords, actual_topics, source_label):
     )
 
     with mission_tab:
+        st.markdown("<div id='mission-control'></div>", unsafe_allow_html=True)
         left_col, right_col = st.columns([1.15, 0.85])
         with left_col:
             st.markdown("<div class='section-label'>Conversation mix</div>", unsafe_allow_html=True)
@@ -2451,6 +2581,7 @@ def render_dashboard(df, topic_keywords, actual_topics, source_label):
             )
 
     with topics_tab:
+        st.markdown("<div id='topic-radar'></div>", unsafe_allow_html=True)
         if not topic_summaries:
             st.info(
                 "Add more comments or loosen the filters a bit to unlock narrative clustering."
@@ -2527,6 +2658,7 @@ def render_dashboard(df, topic_keywords, actual_topics, source_label):
             )
 
     with algorithm_tab:
+        st.markdown("<div id='algorithm-lab'></div>", unsafe_allow_html=True)
         st.markdown(
             """
             <div class="section-label accent">Algorithm lab</div>
@@ -2596,6 +2728,7 @@ def render_dashboard(df, topic_keywords, actual_topics, source_label):
         )
 
     with strategy_tab:
+        st.markdown("<div id='strategy-studio'></div>", unsafe_allow_html=True)
         recommendations = build_recommendations(df, topic_summaries)
         recommendation_columns = st.columns(3)
         for column, (title, items) in zip(recommendation_columns, recommendations.items()):
@@ -2978,3 +3111,5 @@ if source_df is not None:
             render_dashboard(processed_df, topic_keywords, actual_topics, source_label)
 else:
     render_landing_page(data_source)
+
+render_floating_nav(data_source)
