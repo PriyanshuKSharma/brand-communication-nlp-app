@@ -23,19 +23,6 @@ SOURCE_OPTIONS = (
     "Upload CSV",
     "Fetch from YouTube",
 )
-MODE_ROUTE_MAP = {
-    "landing": "Landing page",
-    "sample": "Use sample data",
-    "upload": "Upload CSV",
-    "youtube": "Fetch from YouTube",
-}
-MODE_LABELS = {
-    "Landing page": "Landing",
-    "Use sample data": "Sample",
-    "Upload CSV": "Upload",
-    "Fetch from YouTube": "YouTube",
-}
-MODE_REVERSE_ROUTE = {value: key for key, value in MODE_ROUTE_MAP.items()}
 THEME_OPTIONS = ("Editorial Dawn", "Campaign Night", "Sunset Pulse")
 
 
@@ -206,17 +193,17 @@ def load_css(theme_mode):
         section[data-testid="stSidebar"] [data-testid="stSlider"],
         section[data-testid="stSidebar"] [data-testid="stTextInput"],
         section[data-testid="stSidebar"] [data-testid="stFileUploader"] {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.09);
-            border-radius: 16px;
-            padding: 0.55rem 0.7rem 0.45rem;
-            margin-bottom: 0.6rem;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.10);
+            border-radius: 18px;
+            padding: 0.7rem 0.8rem 0.55rem;
+            margin-bottom: 0.8rem;
         }
 
         .sidebar-panel {
-            margin: 0.7rem 0 0.8rem;
-            padding: 0.85rem 0.9rem 0.9rem;
-            border-radius: 18px;
+            margin: 0.9rem 0 1rem;
+            padding: 1rem 1rem 1.05rem;
+            border-radius: 22px;
             background: linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.05));
             border: 1px solid rgba(255, 255, 255, 0.14);
             box-shadow: 0 14px 32px rgba(0, 0, 0, 0.10);
@@ -225,7 +212,7 @@ def load_css(theme_mode):
         .sidebar-panel h4 {
             margin: 0 0 0.4rem 0;
             font-family: 'Fraunces', serif;
-            font-size: 1.0rem;
+            font-size: 1.08rem;
             line-height: 1.15;
         }
 
@@ -240,7 +227,7 @@ def load_css(theme_mode):
             display: flex;
             flex-wrap: wrap;
             gap: 0.45rem;
-            margin-top: 0.65rem;
+            margin-top: 0.75rem;
         }
 
         .sidebar-chip {
@@ -251,61 +238,33 @@ def load_css(theme_mode):
             background: rgba(255, 255, 255, 0.10);
             border: 1px solid rgba(255, 255, 255, 0.10);
             color: #fff8f1;
-            font-size: 0.76rem;
+            font-size: 0.8rem;
             font-weight: 700;
         }
 
         .floating-nav {
             position: fixed;
             left: 50%;
-            bottom: 14px;
+            bottom: 18px;
             transform: translateX(-50%);
             z-index: 9999;
-            width: min(95vw, 920px);
-            padding: 0.5rem;
+            width: min(92vw, 820px);
+            padding: 0.7rem;
             border-radius: 999px;
-            background: rgba(15, 23, 42, 0.9);
-            border: 1px solid rgba(168, 85, 247, 0.28);
-            box-shadow: 0 22px 48px rgba(2, 6, 23, 0.34);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-        }
-
-        .floating-nav.hidden {
-            width: auto;
-            padding: 0.34rem 0.4rem;
+            background: rgba(11, 19, 41, 0.82);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.28);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
         }
 
         .floating-nav-inner {
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: space-between;
             gap: 0.45rem;
             overflow-x: auto;
-            padding-bottom: 0.02rem;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
-        }
-
-        .floating-nav-inner::-webkit-scrollbar {
-            display: none;
-        }
-
-        .floating-nav-label {
-            flex: 0 0 auto;
-            color: rgba(226, 232, 240, 0.68) !important;
-            font-size: 0.62rem;
-            font-weight: 800;
-            letter-spacing: 0.16em;
-            text-transform: uppercase;
-            padding: 0 0.12rem;
-        }
-
-        .floating-nav-divider {
-            flex: 0 0 1px;
-            height: 16px;
-            background: rgba(148, 163, 184, 0.28);
-            margin: 0 0.1rem;
+            padding-bottom: 0.1rem;
         }
 
         .floating-nav a {
@@ -313,82 +272,34 @@ def load_css(theme_mode):
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 0.5rem;
-            padding: 0.46rem 0.92rem;
+            gap: 0.4rem;
+            padding: 0.68rem 0.95rem;
             border-radius: 999px;
             text-decoration: none;
             white-space: nowrap;
             font-weight: 700;
-            font-size: 0.72rem;
-            color: rgba(226, 232, 240, 0.78) !important;
-            border: 1px solid rgba(148, 163, 184, 0.18);
-            background: rgba(15, 23, 42, 0.38);
-            transition: transform 160ms ease, background 160ms ease, border-color 160ms ease, box-shadow 160ms ease, color 160ms ease;
+            font-size: 0.88rem;
+            color: #f7f4ee !important;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.06);
+            transition: transform 160ms ease, background 160ms ease, border-color 160ms ease;
         }
 
         .floating-nav a:hover {
             transform: translateY(-1px);
-            color: #e9d5ff !important;
-            background: rgba(30, 41, 59, 0.82);
-            border-color: rgba(168, 85, 247, 0.3);
-            box-shadow: 0 10px 24px rgba(2, 6, 23, 0.18);
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.16);
         }
 
         .floating-nav a.primary {
-            background: linear-gradient(135deg, rgba(124, 58, 237, 0.98), rgba(168, 85, 247, 0.94));
-            color: #ffffff !important;
-            border-color: rgba(196, 181, 253, 0.24);
-            box-shadow: 0 12px 26px rgba(124, 58, 237, 0.34);
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.95), rgba(255, 145, 83, 0.92));
+            color: #fff8f1 !important;
+            border-color: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 10px 24px rgba(255, 107, 53, 0.28);
         }
 
         .floating-nav a.primary:hover {
-            background: linear-gradient(135deg, rgba(139, 92, 246, 1), rgba(168, 85, 247, 0.98));
-        }
-
-        .nav-icon {
-            display: inline-flex;
-            width: 18px;
-            height: 18px;
-            flex: 0 0 18px;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .nav-icon svg {
-            width: 18px;
-            height: 18px;
-            stroke-width: 2;
-        }
-
-        .nav-copy {
-            display: inline;
-        }
-
-        @media (max-width: 720px) {
-            .floating-nav {
-                width: min(95vw, 100%);
-                padding: 0.38rem;
-                border-radius: 999px;
-            }
-
-            .floating-nav-inner {
-                gap: 0.25rem;
-            }
-
-            .floating-nav-label {
-                font-size: 0.54rem;
-                letter-spacing: 0.12em;
-            }
-
-            .floating-nav a {
-                padding: 0.36rem 0.58rem;
-                font-size: 0.66rem;
-                gap: 0.35rem;
-            }
-
-            .nav-copy {
-                display: none;
-            }
+            background: linear-gradient(135deg, rgba(255, 121, 68, 0.98), rgba(255, 153, 95, 0.96));
         }
 
         .stButton > button,
@@ -1161,9 +1072,9 @@ def load_css(theme_mode):
         }
 
         .visual-module {
-            margin-top: 0.8rem;
-            padding: 0.85rem 0.9rem 0.9rem;
-            border-radius: 18px;
+            margin-top: 0.95rem;
+            padding: 1rem 1rem 1.05rem;
+            border-radius: 22px;
             background: linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.05));
             border: 1px solid rgba(255, 255, 255, 0.14);
             box-shadow: 0 14px 32px rgba(0, 0, 0, 0.10);
@@ -1182,7 +1093,7 @@ def load_css(theme_mode):
         .visual-module h4 {
             margin: 0;
             font-family: 'Fraunces', serif;
-            font-size: 1.0rem;
+            font-size: 1.12rem;
             line-height: 1.15;
         }
 
@@ -1190,13 +1101,13 @@ def load_css(theme_mode):
             margin: 0.45rem 0 0 0;
             color: rgba(255, 255, 255, 0.76);
             line-height: 1.55;
-            font-size: 0.85rem;
+            font-size: 0.92rem;
         }
 
         .theme-preview {
             display: flex;
             gap: 0.45rem;
-            margin-top: 0.7rem;
+            margin-top: 0.85rem;
         }
 
         .theme-swatch {
@@ -1211,7 +1122,7 @@ def load_css(theme_mode):
             display: flex;
             flex-wrap: wrap;
             gap: 0.45rem;
-            margin-top: 0.65rem;
+            margin-top: 0.75rem;
         }
 
         .theme-meta span {
@@ -1221,9 +1132,17 @@ def load_css(theme_mode):
             border-radius: 999px;
             background: rgba(255, 255, 255, 0.10);
             border: 1px solid rgba(255, 255, 255, 0.10);
-            font-size: 0.76rem;
+            font-size: 0.8rem;
             font-weight: 700;
             color: #fff8f1;
+        }
+
+        .theme-toggle label {
+            font-weight: 700;
+        }
+
+        .theme-toggle small {
+            color: rgba(255, 255, 255, 0.72);
         }
 
         .marketing-badge {
@@ -2075,103 +1994,44 @@ def render_algorithm_card(title, subtitle, body, bullets):
     )
 
 
-def render_bottom_nav(mode_hint):
-    nav_hidden = st.session_state.get("bottom_nav_hidden", False)
-    if nav_hidden:
-        return
+def render_floating_nav(mode_hint):
+    if mode_hint == "Landing page":
+        items = [
+            ("#top", "Top", True),
+            ("#project-overview", "Overview", False),
+            ("#methods-overview", "Algorithms", False),
+            ("#input-shape", "Input", False),
+            ("#future-insights", "Insights", False),
+        ]
+    else:
+        items = [
+            ("#top", "Top", True),
+            ("#mission-control", "Mission", False),
+            ("#topic-radar", "Topics", False),
+            ("#algorithm-lab", "Methods", False),
+            ("#strategy-studio", "Strategy", False),
+        ]
 
-    mode_items = [
-        (
-            "?mode=landing",
-            "Landing",
-            mode_hint == "Landing page",
-            """
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M3 12l9-8 9 8"></path>
-                <path d="M5 10v10h14V10"></path>
-                <path d="M10 20v-6h4v6"></path>
-            </svg>
-            """,
-        ),
-        (
-            "?mode=sample",
-            "Sample",
-            mode_hint == "Use sample data",
-            """
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M4 6h16"></path>
-                <path d="M4 12h16"></path>
-                <path d="M4 18h16"></path>
-                <circle cx="9" cy="6" r="1.5"></circle>
-                <circle cx="15" cy="12" r="1.5"></circle>
-                <circle cx="7" cy="18" r="1.5"></circle>
-            </svg>
-            """,
-        ),
-        (
-            "?mode=upload",
-            "Upload",
-            mode_hint == "Upload CSV",
-            """
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M12 3v12"></path>
-                <path d="m7 8 5-5 5 5"></path>
-                <path d="M5 21h14"></path>
-            </svg>
-            """,
-        ),
-        (
-            "?mode=youtube",
-            "YouTube",
-            mode_hint == "Fetch from YouTube",
-            """
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <rect x="3" y="5" width="18" height="14" rx="4"></rect>
-                <path d="M10 9l6 3-6 3V9z"></path>
-            </svg>
-            """,
-        ),
-    ]
-    mode_links = "".join(
-        "<a class='{cls}' href='{href}' aria-current='{current}'>{icon}<span class='nav-copy'>{label}</span></a>".format(
-            cls="primary" if is_active else "",
+    nav_links = "".join(
+        "<a class='{cls}' href='{href}'>{label}</a>".format(
+            cls="primary" if is_primary else "",
             href=escape_html(href),
-            current="page" if is_active else "false",
-            icon=icon,
             label=escape_html(label),
         )
-        for href, label, is_active, icon in mode_items
+        for href, label, is_primary in items
     )
     st.markdown(
         """
-        <nav class="floating-nav" aria-label="Quick navigation">
-            <div class="floating-nav-inner">
-                {mode_links}
-            </div>
-        </nav>
-        """.format(mode_links=mode_links),
+        <div class="floating-nav" aria-label="Quick navigation">
+            <div class="floating-nav-inner">{links}</div>
+        </div>
+        """.format(links=nav_links),
         unsafe_allow_html=True,
     )
 
 
 def set_data_source(mode):
     st.session_state["data_source"] = mode
-    route_lookup = {
-        "Landing page": "landing",
-        "Use sample data": "sample",
-        "Upload CSV": "upload",
-        "Fetch from YouTube": "youtube",
-    }
-    route = route_lookup.get(mode)
-    if route:
-        try:
-            st.query_params["mode"] = route
-        except Exception:
-            pass
-
-
-def toggle_bottom_nav():
-    st.session_state["bottom_nav_hidden"] = not st.session_state.get("bottom_nav_hidden", False)
 
 
 def render_landing_page(mode_hint):
@@ -2950,8 +2810,6 @@ if "youtube_data" not in st.session_state:
     st.session_state["youtube_data"] = None
 if "theme_mode" not in st.session_state:
     st.session_state["theme_mode"] = "Editorial Dawn"
-if "bottom_nav_hidden" not in st.session_state:
-    st.session_state["bottom_nav_hidden"] = False
 
 st.sidebar.markdown("## Brand Intel Studio")
 st.sidebar.markdown(
@@ -2968,13 +2826,6 @@ st.sidebar.markdown(
     """,
     unsafe_allow_html=True,
 )
-
-st.sidebar.button(
-    "Hide bottom nav" if not st.session_state.get("bottom_nav_hidden", False) else "Show bottom nav",
-    width="stretch",
-    on_click=toggle_bottom_nav,
-)
-
 st.sidebar.markdown(
     """
     <div class="upload-note">
@@ -3030,12 +2881,16 @@ theme_palette = {
 })
 
 st.sidebar.markdown(
+    f"<div class='theme-toggle'><label>Theme mood</label><br><small>{escape_html(theme_caption)}</small></div>",
+    unsafe_allow_html=True,
+)
+
+st.sidebar.markdown(
     """
-    <div class="sidebar-panel">
-        <h4>Visual mode</h4>
-        <p>{caption}</p>
-        <label style="display:block; margin-top:0.7rem; font-size:0.78rem; font-weight:800; letter-spacing:0.14em; text-transform:uppercase; color: rgba(255,255,255,0.72);">Selected palette</label>
+    <div class="visual-module">
+        <label>Selected palette</label>
         <h4>{descriptor}</h4>
+        <p>{caption}</p>
         <div class="theme-preview">
             <span class="theme-swatch" style="background:{s1};"></span>
             <span class="theme-swatch" style="background:{s2};"></span>
@@ -3062,36 +2917,30 @@ st.sidebar.markdown(
 
 load_css(theme_mode)
 
-try:
-    selected_mode = st.query_params.get("mode", None)
-except Exception:
-    selected_mode = None
-if isinstance(selected_mode, list):
-    selected_mode = selected_mode[0] if selected_mode else None
-if selected_mode in MODE_ROUTE_MAP:
-    st.session_state["data_source"] = MODE_ROUTE_MAP[selected_mode]
-
-data_source = st.session_state.get("data_source", "Landing page")
-source_df = None
-source_label = "Campaign dataset"
-
 st.sidebar.markdown(
     """
-    <div class="upload-note">
-        <strong>Use the bottom bar to switch modes.</strong><br><br>
-        <div class="schema-row">
-            <span class="schema-chip">Landing</span>
-            <span class="schema-chip">Sample</span>
-            <span class="schema-chip">Upload</span>
-            <span class="schema-chip">YouTube</span>
-        </div>
+    <div class="sidebar-panel">
+        <h4>Choose your workspace</h4>
+        <p>Start from a landing page, load sample data, upload a CSV, or connect YouTube comments for live analysis.</p>
     </div>
     """,
     unsafe_allow_html=True,
 )
 
+data_source = st.sidebar.radio("Experience mode", SOURCE_OPTIONS, key="data_source")
+source_df = None
+source_label = "Campaign dataset"
+
 if data_source == "Landing page":
-    st.sidebar.info("Explore the product story first.")
+    st.sidebar.markdown(
+        """
+        <div class="sidebar-panel">
+            <h4>Inspiration mode</h4>
+            <p>Explore the product story first, or jump into real analysis when you are ready.</p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
     st.sidebar.button(
         "Open sample cockpit",
         width="stretch",
@@ -3108,8 +2957,8 @@ elif data_source == "Upload CSV":
     st.sidebar.markdown(
         """
         <div class="sidebar-panel">
-            <h4>Upload CSV</h4>
-            <p>Need a file with <code>comment_text</code>. Add <code>platform</code>, <code>likes</code>, and <code>timestamp</code> for deeper analysis.</p>
+            <h4>Upload a CSV</h4>
+            <p>A single file with <code>comment_text</code> is enough. Add <code>platform</code>, <code>likes</code>, and <code>timestamp</code> for richer insights.</p>
         </div>
         """,
         unsafe_allow_html=True,
@@ -3130,7 +2979,7 @@ elif data_source == "Fetch from YouTube":
         """
         <div class="sidebar-panel">
             <h4>YouTube connector</h4>
-            <p>Pull live comments and convert them into a campaign readout.</p>
+            <p>Pull live comments from a video and turn audience reaction into a campaign readout.</p>
         </div>
         """,
         unsafe_allow_html=True,
@@ -3190,7 +3039,7 @@ if source_df is not None:
             """
             <div class="sidebar-panel">
                 <h4>Analysis controls</h4>
-                <p>Filter by platform, engagement, keywords, and topic count.</p>
+                <p>Shape the signal by platform, engagement, keywords, and the number of narrative lanes.</p>
             </div>
             """,
             unsafe_allow_html=True,
@@ -3263,4 +3112,4 @@ if source_df is not None:
 else:
     render_landing_page(data_source)
 
-render_bottom_nav(data_source)
+render_floating_nav(data_source)
