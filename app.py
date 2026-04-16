@@ -193,17 +193,17 @@ def load_css(theme_mode):
         section[data-testid="stSidebar"] [data-testid="stSlider"],
         section[data-testid="stSidebar"] [data-testid="stTextInput"],
         section[data-testid="stSidebar"] [data-testid="stFileUploader"] {
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.10);
-            border-radius: 18px;
-            padding: 0.7rem 0.8rem 0.55rem;
-            margin-bottom: 0.8rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            border-radius: 16px;
+            padding: 0.55rem 0.7rem 0.45rem;
+            margin-bottom: 0.6rem;
         }
 
         .sidebar-panel {
-            margin: 0.9rem 0 1rem;
-            padding: 1rem 1rem 1.05rem;
-            border-radius: 22px;
+            margin: 0.7rem 0 0.8rem;
+            padding: 0.85rem 0.9rem 0.9rem;
+            border-radius: 18px;
             background: linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.05));
             border: 1px solid rgba(255, 255, 255, 0.14);
             box-shadow: 0 14px 32px rgba(0, 0, 0, 0.10);
@@ -212,7 +212,7 @@ def load_css(theme_mode):
         .sidebar-panel h4 {
             margin: 0 0 0.4rem 0;
             font-family: 'Fraunces', serif;
-            font-size: 1.08rem;
+            font-size: 1.0rem;
             line-height: 1.15;
         }
 
@@ -227,7 +227,7 @@ def load_css(theme_mode):
             display: flex;
             flex-wrap: wrap;
             gap: 0.45rem;
-            margin-top: 0.75rem;
+            margin-top: 0.65rem;
         }
 
         .sidebar-chip {
@@ -238,7 +238,7 @@ def load_css(theme_mode):
             background: rgba(255, 255, 255, 0.10);
             border: 1px solid rgba(255, 255, 255, 0.10);
             color: #fff8f1;
-            font-size: 0.8rem;
+            font-size: 0.76rem;
             font-weight: 700;
         }
 
@@ -1072,9 +1072,9 @@ def load_css(theme_mode):
         }
 
         .visual-module {
-            margin-top: 0.95rem;
-            padding: 1rem 1rem 1.05rem;
-            border-radius: 22px;
+            margin-top: 0.8rem;
+            padding: 0.85rem 0.9rem 0.9rem;
+            border-radius: 18px;
             background: linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.05));
             border: 1px solid rgba(255, 255, 255, 0.14);
             box-shadow: 0 14px 32px rgba(0, 0, 0, 0.10);
@@ -1093,7 +1093,7 @@ def load_css(theme_mode):
         .visual-module h4 {
             margin: 0;
             font-family: 'Fraunces', serif;
-            font-size: 1.12rem;
+            font-size: 1.0rem;
             line-height: 1.15;
         }
 
@@ -1101,13 +1101,13 @@ def load_css(theme_mode):
             margin: 0.45rem 0 0 0;
             color: rgba(255, 255, 255, 0.76);
             line-height: 1.55;
-            font-size: 0.92rem;
+            font-size: 0.85rem;
         }
 
         .theme-preview {
             display: flex;
             gap: 0.45rem;
-            margin-top: 0.85rem;
+            margin-top: 0.7rem;
         }
 
         .theme-swatch {
@@ -1122,7 +1122,7 @@ def load_css(theme_mode):
             display: flex;
             flex-wrap: wrap;
             gap: 0.45rem;
-            margin-top: 0.75rem;
+            margin-top: 0.65rem;
         }
 
         .theme-meta span {
@@ -1132,17 +1132,9 @@ def load_css(theme_mode):
             border-radius: 999px;
             background: rgba(255, 255, 255, 0.10);
             border: 1px solid rgba(255, 255, 255, 0.10);
-            font-size: 0.8rem;
+            font-size: 0.76rem;
             font-weight: 700;
             color: #fff8f1;
-        }
-
-        .theme-toggle label {
-            font-weight: 700;
-        }
-
-        .theme-toggle small {
-            color: rgba(255, 255, 255, 0.72);
         }
 
         .marketing-badge {
@@ -2881,16 +2873,12 @@ theme_palette = {
 })
 
 st.sidebar.markdown(
-    f"<div class='theme-toggle'><label>Theme mood</label><br><small>{escape_html(theme_caption)}</small></div>",
-    unsafe_allow_html=True,
-)
-
-st.sidebar.markdown(
     """
-    <div class="visual-module">
-        <label>Selected palette</label>
-        <h4>{descriptor}</h4>
+    <div class="sidebar-panel">
+        <h4>Visual mode</h4>
         <p>{caption}</p>
+        <label style="display:block; margin-top:0.7rem; font-size:0.78rem; font-weight:800; letter-spacing:0.14em; text-transform:uppercase; color: rgba(255,255,255,0.72);">Selected palette</label>
+        <h4>{descriptor}</h4>
         <div class="theme-preview">
             <span class="theme-swatch" style="background:{s1};"></span>
             <span class="theme-swatch" style="background:{s2};"></span>
@@ -2920,14 +2908,14 @@ load_css(theme_mode)
 st.sidebar.markdown(
     """
     <div class="sidebar-panel">
-        <h4>Choose your workspace</h4>
-        <p>Start from a landing page, load sample data, upload a CSV, or connect YouTube comments for live analysis.</p>
+        <h4>Workspace</h4>
+        <p>Pick a starting point for the analysis.</p>
     </div>
     """,
     unsafe_allow_html=True,
 )
 
-data_source = st.sidebar.radio("Experience mode", SOURCE_OPTIONS, key="data_source")
+data_source = st.sidebar.radio("Mode", SOURCE_OPTIONS, key="data_source")
 source_df = None
 source_label = "Campaign dataset"
 
@@ -2935,8 +2923,8 @@ if data_source == "Landing page":
     st.sidebar.markdown(
         """
         <div class="sidebar-panel">
-            <h4>Inspiration mode</h4>
-            <p>Explore the product story first, or jump into real analysis when you are ready.</p>
+            <h4>Landing page</h4>
+            <p>Explore the product story first.</p>
         </div>
         """,
         unsafe_allow_html=True,
@@ -2957,8 +2945,8 @@ elif data_source == "Upload CSV":
     st.sidebar.markdown(
         """
         <div class="sidebar-panel">
-            <h4>Upload a CSV</h4>
-            <p>A single file with <code>comment_text</code> is enough. Add <code>platform</code>, <code>likes</code>, and <code>timestamp</code> for richer insights.</p>
+            <h4>Upload CSV</h4>
+            <p>Need a file with <code>comment_text</code>. Add <code>platform</code>, <code>likes</code>, and <code>timestamp</code> for deeper analysis.</p>
         </div>
         """,
         unsafe_allow_html=True,
@@ -2979,7 +2967,7 @@ elif data_source == "Fetch from YouTube":
         """
         <div class="sidebar-panel">
             <h4>YouTube connector</h4>
-            <p>Pull live comments from a video and turn audience reaction into a campaign readout.</p>
+            <p>Pull live comments and convert them into a campaign readout.</p>
         </div>
         """,
         unsafe_allow_html=True,
@@ -3039,7 +3027,7 @@ if source_df is not None:
             """
             <div class="sidebar-panel">
                 <h4>Analysis controls</h4>
-                <p>Shape the signal by platform, engagement, keywords, and the number of narrative lanes.</p>
+                <p>Filter by platform, engagement, keywords, and topic count.</p>
             </div>
             """,
             unsafe_allow_html=True,
