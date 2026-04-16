@@ -1,5 +1,6 @@
 import html
 import os
+import re
 from urllib.parse import parse_qs, urlparse
 
 import numpy as np
@@ -22,47 +23,94 @@ SOURCE_OPTIONS = (
     "Upload CSV",
     "Fetch from YouTube",
 )
-THEME_OPTIONS = ("Editorial", "Campaign Night")
+THEME_OPTIONS = ("Editorial Dawn", "Campaign Night", "Sunset Pulse")
 
 
 def escape_html(value):
     return html.escape(str(value))
 
 
+def normalize_topic_keywords(keywords, limit=5):
+    raw = str(keywords or "").strip()
+    if not raw:
+        return []
+
+    parts = [piece.strip() for piece in re.split(r"[,/|]+", raw) if piece.strip()]
+    if len(parts) <= 1:
+        camel_parts = re.findall(r"[A-Z]?[a-z]+|[A-Z]+(?=[A-Z]|$)|\d+", raw)
+        if len(camel_parts) > 1:
+            parts = camel_parts
+        else:
+            parts = re.findall(r"[A-Za-z][A-Za-z0-9_-]+", raw) or [raw]
+
+    cleaned = []
+    for piece in parts:
+        piece = piece.replace("_", " ").replace("-", " ").strip()
+        if piece:
+            cleaned.append(piece.title())
+    return cleaned[:limit]
+
+
 def load_css(theme_mode):
-    night_mode = theme_mode == "Campaign Night"
-    app_bg = (
-        """
-                radial-gradient(circle at top left, rgba(255, 107, 53, 0.20), transparent 28%),
-                radial-gradient(circle at 86% 8%, rgba(19, 138, 114, 0.22), transparent 24%),
-                radial-gradient(circle at 20% 82%, rgba(242, 169, 0, 0.16), transparent 20%),
-                linear-gradient(180deg, #f7f2e8 0%, #efe7d8 100%);
-        """
-        if not night_mode
-        else
-        """
-                radial-gradient(circle at top left, rgba(255, 107, 53, 0.28), transparent 28%),
-                radial-gradient(circle at 85% 10%, rgba(24, 197, 160, 0.22), transparent 24%),
-                radial-gradient(circle at 18% 82%, rgba(255, 200, 87, 0.16), transparent 20%),
-                linear-gradient(180deg, #08111f 0%, #101b2f 100%);
-        """
-    )
-    card_bg = "rgba(255, 252, 247, 0.82)" if not night_mode else "rgba(13, 22, 38, 0.82)"
-    muted = "#5c6270" if not night_mode else "rgba(245, 247, 251, 0.72)"
-    app_ink = "#11203b" if not night_mode else "#f5f7fb"
-    sidebar_bg = (
-        "linear-gradient(180deg, rgba(11, 19, 41, 0.98) 0%, rgba(22, 32, 61, 0.96) 100%)"
-        if not night_mode
-        else "linear-gradient(180deg, rgba(5, 10, 19, 0.98) 0%, rgba(11, 18, 31, 0.96) 100%)"
-    )
-    board_bg = (
-        "linear-gradient(180deg, rgba(17, 32, 59, 0.96) 0%, rgba(25, 37, 70, 0.95) 100%)"
-        if not night_mode
-        else "linear-gradient(180deg, rgba(9, 16, 28, 0.98) 0%, rgba(20, 30, 50, 0.96) 100%)"
-    )
-    border_soft = "rgba(17, 32, 59, 0.08)" if not night_mode else "rgba(255, 255, 255, 0.10)"
-    panel_shadow = "0 22px 60px rgba(17, 32, 59, 0.12)" if not night_mode else "0 22px 60px rgba(0, 0, 0, 0.28)"
-    card_panel = card_bg
+    theme_presets = {
+        "Editorial Dawn": {
+            "app_bg": "radial-gradient(circle at top left, rgba(255, 107, 53, 0.20), transparent 28%), radial-gradient(circle at 86% 8%, rgba(19, 138, 114, 0.22), transparent 24%), radial-gradient(circle at 20% 82%, rgba(242, 169, 0, 0.16), transparent 20%), linear-gradient(180deg, #f7f2e8 0%, #efe7d8 100%)",
+            "ink": "#11203b",
+            "muted": "#5c6270",
+            "sidebar_bg": "linear-gradient(180deg, rgba(11, 19, 41, 0.98) 0%, rgba(22, 32, 61, 0.96) 100%)",
+            "hero_bg": "linear-gradient(135deg, rgba(255, 248, 240, 0.96) 0%, rgba(255, 255, 255, 0.80) 52%, rgba(226, 246, 241, 0.92) 100%)",
+            "board_bg": "linear-gradient(180deg, rgba(17, 32, 59, 0.96) 0%, rgba(25, 37, 70, 0.95) 100%)",
+            "card_bg": "rgba(255, 252, 247, 0.82)",
+            "card_border": "rgba(17, 32, 59, 0.08)",
+            "mini_bg": "rgba(255, 255, 255, 0.66)",
+            "mini_border": "rgba(17, 32, 59, 0.08)",
+            "shadow": "0 22px 60px rgba(17, 32, 59, 0.12)",
+            "brand_accent": "#ff6b35",
+            "brand_secondary": "#138a72",
+            "brand_gold": "#f2a900",
+            "section_tint": "rgba(255, 255, 255, 0.52)",
+        },
+        "Campaign Night": {
+            "app_bg": "radial-gradient(circle at top left, rgba(255, 107, 53, 0.28), transparent 28%), radial-gradient(circle at 85% 10%, rgba(24, 197, 160, 0.22), transparent 24%), radial-gradient(circle at 18% 82%, rgba(255, 200, 87, 0.16), transparent 20%), linear-gradient(180deg, #08111f 0%, #101b2f 100%)",
+            "ink": "#f5f7fb",
+            "muted": "rgba(245, 247, 251, 0.72)",
+            "sidebar_bg": "linear-gradient(180deg, rgba(5, 10, 19, 0.98) 0%, rgba(11, 18, 31, 0.96) 100%)",
+            "hero_bg": "linear-gradient(135deg, rgba(13, 22, 38, 0.96) 0%, rgba(20, 30, 50, 0.92) 52%, rgba(12, 62, 53, 0.82) 100%)",
+            "board_bg": "linear-gradient(180deg, rgba(9, 16, 28, 0.98) 0%, rgba(20, 30, 50, 0.96) 100%)",
+            "card_bg": "rgba(13, 22, 38, 0.82)",
+            "card_border": "rgba(255, 255, 255, 0.10)",
+            "mini_bg": "rgba(255, 255, 255, 0.08)",
+            "mini_border": "rgba(255, 255, 255, 0.10)",
+            "shadow": "0 22px 60px rgba(0, 0, 0, 0.28)",
+            "brand_accent": "#ff8a5b",
+            "brand_secondary": "#25c79b",
+            "brand_gold": "#ffcb57",
+            "section_tint": "rgba(255, 255, 255, 0.06)",
+        },
+        "Sunset Pulse": {
+            "app_bg": "radial-gradient(circle at top left, rgba(255, 122, 78, 0.22), transparent 24%), radial-gradient(circle at 82% 12%, rgba(255, 201, 87, 0.18), transparent 26%), radial-gradient(circle at 18% 84%, rgba(126, 87, 194, 0.10), transparent 22%), linear-gradient(180deg, #fff5ef 0%, #f7ece2 100%)",
+            "ink": "#1a1b2e",
+            "muted": "#645b73",
+            "sidebar_bg": "linear-gradient(180deg, rgba(38, 22, 58, 0.98) 0%, rgba(57, 31, 81, 0.96) 100%)",
+            "hero_bg": "linear-gradient(135deg, rgba(255, 246, 239, 0.96) 0%, rgba(255, 255, 255, 0.82) 45%, rgba(255, 229, 212, 0.92) 100%)",
+            "board_bg": "linear-gradient(180deg, rgba(39, 23, 58, 0.96) 0%, rgba(71, 36, 98, 0.95) 100%)",
+            "card_bg": "rgba(255, 252, 247, 0.86)",
+            "card_border": "rgba(26, 27, 46, 0.08)",
+            "mini_bg": "rgba(255, 255, 255, 0.70)",
+            "mini_border": "rgba(26, 27, 46, 0.08)",
+            "shadow": "0 24px 60px rgba(26, 27, 46, 0.14)",
+            "brand_accent": "#ff7a4e",
+            "brand_secondary": "#7e57c2",
+            "brand_gold": "#ffb703",
+            "section_tint": "rgba(255, 255, 255, 0.54)",
+        },
+    }
+    theme = theme_presets.get(theme_mode, theme_presets["Editorial Dawn"])
+    app_ink = theme["ink"]
+    muted = theme["muted"]
+    card_panel = theme["card_bg"]
+    border_soft = theme["card_border"]
+    panel_shadow = theme["shadow"]
     css = """
         <style>
         @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Space+Grotesk:wght@400;500;700&display=swap');
@@ -72,9 +120,9 @@ def load_css(theme_mode):
             --ink: __INK__;
             --panel: __PANEL__;
             --muted: __MUTED__;
-            --accent: #ff6b35;
-            --accent-2: #138a72;
-            --gold: #f2a900;
+            --accent: __ACCENT__;
+            --accent-2: __ACCENT2__;
+            --gold: __GOLD__;
             --line: __LINE__;
             --shadow: __SHADOW__;
         }
@@ -89,8 +137,8 @@ def load_css(theme_mode):
         }
 
         .block-container {
-            max-width: 1220px;
-            padding-top: 1.5rem;
+            max-width: 1380px;
+            padding-top: 2.2rem;
             padding-bottom: 4rem;
         }
 
@@ -196,13 +244,14 @@ def load_css(theme_mode):
         }
 
         .hero-shell {
-            padding: 2rem;
+            padding: 2.25rem;
             border-radius: 30px;
             background: __HERO_BG__;
             border: 1px solid __HERO_BORDER__;
             box-shadow: var(--shadow);
             overflow: hidden;
             position: relative;
+            margin-bottom: 1.4rem;
         }
 
         .hero-shell::after {
@@ -218,7 +267,7 @@ def load_css(theme_mode):
         .hero-grid {
             display: grid;
             grid-template-columns: 1.2fr 0.92fr;
-            gap: 1.2rem;
+            gap: 1.7rem;
             align-items: center;
         }
 
@@ -296,7 +345,7 @@ def load_css(theme_mode):
 
         .signal-board {
             border-radius: 28px;
-            padding: 1.15rem;
+            padding: 1.35rem;
             background: __BOARD_BG__;
             color: #f7f4ee;
             box-shadow: 0 28px 60px rgba(17, 32, 59, 0.18);
@@ -360,13 +409,21 @@ def load_css(theme_mode):
         }
 
         .section-label {
-            margin-top: 1.75rem;
-            margin-bottom: 0.8rem;
+            margin-top: 2.1rem;
+            margin-bottom: 0.95rem;
             font-size: 0.85rem;
             font-weight: 700;
             letter-spacing: 0.12em;
             text-transform: uppercase;
             color: var(--muted);
+        }
+
+        .section-label.accent {
+            color: var(--accent);
+        }
+
+        .section-label.secondary {
+            color: var(--accent-2);
         }
 
         .feature-card,
@@ -380,8 +437,44 @@ def load_css(theme_mode):
             background: __CARD_BG__;
             border: 1px solid __CARD_BORDER__;
             border-radius: 24px;
-            padding: 1.25rem;
+            padding: 1.4rem;
             box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+            isolation: isolate;
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            color: var(--ink);
+        }
+
+        .topic-card {
+            min-height: 250px;
+        }
+
+        .feature-card::before,
+        .story-card::before,
+        .impact-card::before,
+        .topic-card::before,
+        .quote-card::before,
+        .reco-card::before,
+        .data-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent 36%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .feature-card > *,
+        .story-card > *,
+        .impact-card > *,
+        .topic-card > *,
+        .quote-card > *,
+        .reco-card > *,
+        .data-card > * {
+            position: relative;
+            z-index: 1;
         }
 
         .feature-card h3,
@@ -394,6 +487,72 @@ def load_css(theme_mode):
             margin-top: 0;
             margin-bottom: 0.55rem;
             font-size: 1.2rem;
+        }
+
+        .topic-headline {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 0.65rem;
+        }
+
+        .topic-kicker {
+            font-size: 0.78rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+            color: var(--muted);
+            margin-bottom: 0.35rem;
+        }
+
+        .topic-card h3 {
+            margin-bottom: 0;
+            font-size: 1.35rem;
+            line-height: 1.15;
+        }
+
+        .topic-summary {
+            margin: 0 0 0.95rem 0;
+            color: var(--muted);
+            line-height: 1.55;
+        }
+
+        .topic-chip-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.45rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .topic-badge {
+            flex: 0 0 auto;
+            padding: 0.38rem 0.65rem;
+            border-radius: 999px;
+            font-size: 0.76rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            border: 1px solid rgba(17, 32, 59, 0.08);
+            background: rgba(17, 32, 59, 0.05);
+        }
+
+        .topic-badge.tone-positive {
+            color: #13795b;
+            background: rgba(19, 121, 91, 0.12);
+            border-color: rgba(19, 121, 91, 0.18);
+        }
+
+        .topic-badge.tone-mixed {
+            color: #9a6700;
+            background: rgba(154, 103, 0, 0.12);
+            border-color: rgba(154, 103, 0, 0.18);
+        }
+
+        .topic-badge.tone-negative {
+            color: #b42318;
+            background: rgba(180, 35, 24, 0.12);
+            border-color: rgba(180, 35, 24, 0.18);
         }
 
         .feature-card p,
@@ -433,6 +592,14 @@ def load_css(theme_mode):
             margin-bottom: 0.65rem;
         }
 
+        .feature-kicker.secondary {
+            color: var(--accent-2);
+        }
+
+        .feature-kicker.gold {
+            color: var(--gold);
+        }
+
         .feature-icon {
             width: 44px;
             height: 44px;
@@ -452,6 +619,18 @@ def load_css(theme_mode):
             border: 1px solid rgba(17, 32, 59, 0.08);
             box-shadow: var(--shadow);
             min-height: 152px;
+            position: relative;
+            overflow: hidden;
+            isolation: isolate;
+            backdrop-filter: blur(12px);
+        }
+
+        .metric-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.18), transparent 35%);
+            pointer-events: none;
         }
 
         .metric-label {
@@ -476,13 +655,13 @@ def load_css(theme_mode):
 
         .topic-chip {
             display: inline-flex;
-            margin-right: 0.45rem;
-            margin-bottom: 0.45rem;
-            padding: 0.35rem 0.65rem;
+            padding: 0.38rem 0.68rem;
             border-radius: 999px;
             background: rgba(17, 32, 59, 0.06);
-            font-size: 0.84rem;
-            font-weight: 600;
+            border: 1px solid rgba(17, 32, 59, 0.08);
+            font-size: 0.83rem;
+            font-weight: 700;
+            line-height: 1;
         }
 
         .quote-card blockquote {
@@ -527,11 +706,39 @@ def load_css(theme_mode):
             line-height: 1.6;
         }
 
+        .data-card code,
+        .story-card code,
+        .quote-card code,
+        .reco-card code {
+            display: inline-block;
+            padding: 0.16rem 0.45rem;
+            border-radius: 999px;
+            background: rgba(255, 107, 53, 0.10);
+            border: 1px solid rgba(255, 107, 53, 0.16);
+            color: var(--ink);
+            font-weight: 700;
+        }
+
+        div[data-testid="stCodeBlock"] {
+            border-radius: 18px;
+            border: 1px solid var(--line);
+            background: rgba(17, 32, 59, 0.06) !important;
+            padding: 0.2rem 0.6rem;
+        }
+
         .mini-strip {
             display: grid;
             grid-template-columns: repeat(4, minmax(0, 1fr));
-            gap: 0.9rem;
-            margin-top: 1rem;
+            gap: 1rem;
+            margin-top: 1.2rem;
+        }
+
+        .schema-strip {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            margin-top: 0.4rem;
+            margin-bottom: 0.35rem;
         }
 
         .mini-stat {
@@ -556,7 +763,7 @@ def load_css(theme_mode):
         }
 
         .section-hero {
-            margin: 1.6rem 0 0.8rem;
+            margin: 2rem 0 1rem;
             display: flex;
             align-items: end;
             justify-content: space-between;
@@ -578,15 +785,52 @@ def load_css(theme_mode):
         .upload-note {
             padding: 1rem 1.1rem;
             border-radius: 20px;
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.06));
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            box-shadow: 0 14px 32px rgba(0, 0, 0, 0.12);
             color: #f7f4ee;
             line-height: 1.55;
         }
 
+        .upload-note strong {
+            display: block;
+            margin-bottom: 0.45rem;
+            font-size: 1.02rem;
+        }
+
+        .upload-note code {
+            display: inline-block;
+            margin: 0.12rem 0.12rem 0.12rem 0;
+            padding: 0.18rem 0.48rem;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.16);
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 0.86rem;
+        }
+
+        .upload-note .schema-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            margin-top: 0.45rem;
+        }
+
+        .upload-note .schema-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.3rem 0.55rem;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.10);
+            font-size: 0.82rem;
+            font-weight: 700;
+        }
+
         .theme-toggle {
-            margin-top: 0.75rem;
-            padding: 0.95rem 1rem;
+            margin-top: 1rem;
+            padding: 1rem 1.05rem;
             border-radius: 20px;
             background: rgba(255, 255, 255, 0.08);
             border: 1px solid rgba(255, 255, 255, 0.12);
@@ -594,6 +838,10 @@ def load_css(theme_mode):
 
         .theme-toggle label {
             font-weight: 700;
+        }
+
+        .theme-toggle small {
+            color: rgba(255, 255, 255, 0.72);
         }
 
         .marketing-badge {
@@ -618,8 +866,12 @@ def load_css(theme_mode):
         }
 
         @media (max-width: 900px) {
+            .block-container {
+                padding-top: 1.1rem;
+            }
+
             .hero-shell {
-                padding: 1.4rem;
+                padding: 1.25rem;
                 border-radius: 24px;
             }
 
@@ -644,23 +896,24 @@ def load_css(theme_mode):
         css.replace("__INK__", app_ink)
         .replace("__PANEL__", card_panel)
         .replace("__MUTED__", muted)
+        .replace("__ACCENT__", theme["brand_accent"])
+        .replace("__ACCENT2__", theme["brand_secondary"])
+        .replace("__GOLD__", theme["brand_gold"])
         .replace("__LINE__", border_soft)
         .replace("__SHADOW__", panel_shadow)
-        .replace("__APP_BG__", app_bg)
+        .replace("__APP_BG__", theme["app_bg"])
         .replace("__APP_INK__", app_ink)
-        .replace("__SIDEBAR_BG__", sidebar_bg)
+        .replace("__SIDEBAR_BG__", theme["sidebar_bg"])
         .replace(
             "__HERO_BG__",
-            "linear-gradient(135deg, rgba(255, 248, 240, 0.95) 0%, rgba(255, 255, 255, 0.74) 52%, rgba(226, 246, 241, 0.9) 100%)"
-            if not night_mode
-            else "linear-gradient(135deg, rgba(13, 22, 38, 0.96) 0%, rgba(20, 30, 50, 0.92) 52%, rgba(12, 62, 53, 0.82) 100%)",
+            theme["hero_bg"],
         )
         .replace("__HERO_BORDER__", border_soft)
-        .replace("__BOARD_BG__", board_bg)
-        .replace("__CARD_BG__", card_panel)
-        .replace("__CARD_BORDER__", border_soft)
-        .replace("__MINI_BG__", "rgba(255, 255, 255, 0.66)" if not night_mode else "rgba(255, 255, 255, 0.08)")
-        .replace("__MINI_BORDER__", border_soft)
+        .replace("__BOARD_BG__", theme["board_bg"])
+        .replace("__CARD_BG__", theme["card_bg"])
+        .replace("__CARD_BORDER__", theme["card_border"])
+        .replace("__MINI_BG__", theme["mini_bg"])
+        .replace("__MINI_BORDER__", theme["mini_border"])
     )
     st.markdown(
         css,
@@ -949,7 +1202,7 @@ def build_headline_metrics(df, topic_summaries):
     dominant_note = "Add more comments for stronger clustering."
     if topic_summaries:
         dominant_topic = topic_summaries[0]
-        dominant_value = ", ".join(dominant_topic["keywords"].split(", ")[:2]).title()
+        dominant_value = ", ".join(normalize_topic_keywords(dominant_topic["keywords"], limit=2))
         dominant_note = "{0} comments are orbiting this theme.".format(
             dominant_topic["count"]
         )
@@ -999,7 +1252,7 @@ def build_recommendations(df, topic_summaries):
 
     if negative_topics:
         lead = negative_topics[0]
-        lead_topic = ", ".join(lead["keywords"].split(", ")[:3]).title()
+        lead_topic = ", ".join(normalize_topic_keywords(lead["keywords"], limit=3))
         recommendations["Act now"].append(
             "Repair the {0} narrative. {1} comments in this cluster lean negative, so answer it with proof, pricing context, or support content.".format(
                 lead_topic,
@@ -1022,7 +1275,7 @@ def build_recommendations(df, topic_summaries):
 
     if positive_topics:
         win = positive_topics[0]
-        win_topic = ", ".join(win["keywords"].split(", ")[:3]).title()
+        win_topic = ", ".join(normalize_topic_keywords(win["keywords"], limit=3))
         recommendations["Amplify"].append(
             "Turn {0} into headline language. This topic shows the clearest positive pull in the conversation.".format(
                 win_topic
@@ -1044,7 +1297,7 @@ def build_recommendations(df, topic_summaries):
         "Keep a weekly snapshot of sentiment, topic mix, and question load so you can spot messaging drift before the audience feels it."
     )
     if topic_summaries:
-        dominant = ", ".join(topic_summaries[0]["keywords"].split(", ")[:3]).title()
+        dominant = ", ".join(normalize_topic_keywords(topic_summaries[0]["keywords"], limit=3))
         recommendations["Watch next"].append(
             "Your largest conversation cluster is {0}. Track whether it stays opportunity-led or slides into friction over time.".format(
                 dominant
@@ -1100,11 +1353,12 @@ def render_quote_card(title, description, quotes):
 
 
 def render_topic_card(summary):
+    keywords = normalize_topic_keywords(summary["keywords"], limit=5)
     keyword_markup = "".join(
-        "<span class='topic-chip'>{0}</span>".format(escape_html(keyword.strip().title()))
-        for keyword in summary["keywords"].split(",")[:5]
-        if keyword.strip()
+        "<span class='topic-chip'>{0}</span>".format(escape_html(keyword))
+        for keyword in keywords
     )
+    primary_label = ", ".join(keywords[:3]) if keywords else "Unclear lane"
 
     example_markup = "".join(
         "<p style='margin-top:0.7rem;'><strong>Signal:</strong> {0}</p>".format(
@@ -1116,9 +1370,15 @@ def render_topic_card(summary):
     st.markdown(
         """
         <div class="topic-card">
-            <h3>Topic {topic_number}</h3>
-            <p><span class="{tone_class}">{tone_text}</span> - {count} comments, {share}% of the conversation.</p>
-            <div style="margin-top:0.8rem; margin-bottom:0.4rem;">{keyword_markup}</div>
+            <div class="topic-headline">
+                <div>
+                    <div class="topic-kicker">Topic {topic_number}</div>
+                    <h3>{primary_label}</h3>
+                </div>
+                <div class="topic-badge {tone_class}">{tone_text}</div>
+            </div>
+            <p class="topic-summary">{count} comments, {share}% of the conversation.</p>
+            <div class="topic-chip-row">{keyword_markup}</div>
             {example_markup}
         </div>
         """.format(
@@ -1128,6 +1388,7 @@ def render_topic_card(summary):
             count=summary["count"],
             share=int(round(summary["share"] * 100)),
             keyword_markup=keyword_markup,
+            primary_label=escape_html(primary_label),
             example_markup=example_markup,
         ),
         unsafe_allow_html=True,
@@ -1171,8 +1432,8 @@ def render_landing_page(mode_hint):
 
     helper_copy = {
         "Landing page": "Start with the sample campaign or connect a real conversation stream when you are ready.",
-        "Upload CSV": "Your cockpit is ready. Add a CSV in the sidebar and the narrative engine will spin up instantly.",
-        "Fetch from YouTube": "Paste a video URL and API key in the sidebar to turn live comment streams into strategy.",
+        "Upload CSV": "Your campaign cockpit is ready. Add a CSV in the sidebar and turn raw responses into a story you can act on.",
+        "Fetch from YouTube": "Paste a video URL and API key in the sidebar to transform audience replies into message strategy.",
         "Use sample data": "The demo dataset is one click away if you want to experience the full product flow first.",
     }.get(mode_hint, "Load a dataset from the sidebar to start the analysis.")
 
@@ -1181,14 +1442,15 @@ def render_landing_page(mode_hint):
         <div class="hero-shell">
             <div class="hero-grid">
                 <div>
+                    <div class="marketing-badge">Marketing intelligence studio</div>
                     <div class="eyebrow eyebrow-variant">Brand Intel Studio</div>
-                    <div class="hero-title">Turn social noise into a sharp brand signal.</div>
-                    <p class="hero-copy">This project is built as a modern comment intelligence studio for brands, creators, and marketers. It blends sentiment decoding, topic discovery, and strategy suggestions into one polished experience that feels more like a product launch than a school dashboard.</p>
+                    <div class="hero-title">Turn audience reaction into a campaign-ready growth story.</div>
+                    <p class="hero-copy">This studio helps brands see what is landing, what is confusing, and what should be amplified next. It turns comment streams into a marketing signal with message clarity, resonance, and strategic next steps.</p>
                     <p class="hero-copy">{helper_copy}</p>
                     <div class="hero-actions">
-                        <span class="signal-pill accent">Start with the demo</span>
-                        <span class="signal-pill teal">Upload your own comments</span>
-                        <span class="signal-pill">Connect YouTube live</span>
+                        <span class="signal-pill accent">Track message resonance</span>
+                        <span class="signal-pill teal">Decode campaign feedback</span>
+                        <span class="signal-pill">Plan the next move</span>
                     </div>
                     <div class="hero-badge-row">
                         <span class="signal-pill">{sample_comments} demo comments</span>
@@ -1198,8 +1460,8 @@ def render_landing_page(mode_hint):
                 </div>
                 <div class="signal-board">
                     <div class="eyebrow" style="background: rgba(255,255,255,0.08); color: #fff8f1;">Live signal board</div>
-                    <h3>What the demo already knows</h3>
-                    <p>Use the sample dataset to explore an immediate, visual read on how a brand is being perceived before you bring in live data.</p>
+                    <h3>Campaign pulse at a glance</h3>
+                    <p>Use the sample dataset to preview how the market is responding before you connect live comments.</p>
                     <div class="board-grid">
                         <div class="board-card">
                             <strong>{sample_comments}</strong>
@@ -1270,10 +1532,23 @@ def render_landing_page(mode_hint):
 
     st.markdown(
         """
+        <div class="section-label accent" style="margin-top:1.35rem;">Data contract</div>
+        <div class="schema-strip">
+            <span class="signal-pill accent">Required: comment_text</span>
+            <span class="signal-pill">Best extra: platform</span>
+            <span class="signal-pill">Best extra: likes</span>
+            <span class="signal-pill teal">Best extra: timestamp</span>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    st.markdown(
+        """
         <div class="section-hero">
             <div>
-                <h2>What makes it feel different</h2>
-                <p>A stronger landing page should make the idea obvious in seconds: this is a studio for turning public feedback into decisions, not just a chart wall.</p>
+                <h2>Built for marketing teams who need signal, not noise</h2>
+                <p>The page now frames the product as a campaign intelligence studio with a clear value proposition: understand audience reaction, sharpen the message, and turn comments into action.</p>
             </div>
         </div>
         """,
@@ -1282,22 +1557,22 @@ def render_landing_page(mode_hint):
     feature_columns = st.columns(3)
     feature_cards = [
         (
-            "Designed like a product",
-            "The first screen now tells a clear story, gives the user a confident next step, and uses a more premium editorial layout.",
+            "Audience lens",
+            "See what people are saying, what they are asking, and which message is winning attention before the campaign loses momentum.",
             "01",
-            "Hero experience",
+            "Reach and resonance",
         ),
         (
-            "Built for curiosity",
-            "The landing page shows what the app does before asking for input, which makes the project feel more inventive and approachable.",
+            "Campaign clarity",
+            "The studio translates comments into a marketing-friendly readout so strategy, content, and support teams can move faster together.",
             "02",
-            "Story first",
+            "Message testing",
         ),
         (
-            "Ready for real work",
-            "A live demo path, upload path, and YouTube path are all visible from the start so the user never feels stuck.",
+            "Decision ready",
+            "Live demo, upload, and YouTube paths stay visible from the start so the product feels usable, not hidden behind settings.",
             "03",
-            "Multiple entry points",
+            "Always usable",
         ),
     ]
     for column, (title, copy, icon, kicker) in zip(feature_columns, feature_cards):
@@ -1323,8 +1598,8 @@ def render_landing_page(mode_hint):
         st.markdown(
             """
             <div class="story-card">
-                <div class="feature-kicker">How it works</div>
-                <h3>From noisy comments to sharper messaging</h3>
+                <div class="feature-kicker secondary">How it works</div>
+                <h3>From social reactions to campaign moves</h3>
                 <p><strong>1. Ingest.</strong> Bring in a CSV, load the demo, or connect a YouTube campaign.</p>
                 <p style="margin-top:0.65rem;"><strong>2. Decode.</strong> The app scores sentiment, detects audience questions, and groups the conversation into narrative lanes.</p>
                 <p style="margin-top:0.65rem;"><strong>3. Direct.</strong> Strategy cards tell the team what to repair, what to amplify, and what to monitor next.</p>
@@ -1336,7 +1611,7 @@ def render_landing_page(mode_hint):
         st.markdown(
             """
             <div class="data-card">
-                <div class="feature-kicker">Input shape</div>
+                <div class="feature-kicker gold">Input shape</div>
                 <h3>What the app expects</h3>
                 <p><strong>Required:</strong> `comment_text`</p>
                 <p style="margin-top:0.55rem;"><strong>Helpful:</strong> `platform`, `likes`, `timestamp`, `published_at`</p>
@@ -1673,28 +1948,45 @@ if "data_source" not in st.session_state:
 if "youtube_data" not in st.session_state:
     st.session_state["youtube_data"] = None
 if "theme_mode" not in st.session_state:
-    st.session_state["theme_mode"] = False
+    st.session_state["theme_mode"] = "Editorial Dawn"
 
 st.sidebar.markdown("## Brand Intel Studio")
 st.sidebar.markdown(
     """
     <div class="upload-note">
         <strong>Turn comment streams into brand direction.</strong><br><br>
-        Required column: <code>comment_text</code><br>
-        Best extra fields: <code>platform</code>, <code>likes</code>, <code>timestamp</code>
+        <div class="schema-row">
+            <span class="schema-chip">Required: <code>comment_text</code></span>
+            <span class="schema-chip">Best extra: <code>platform</code></span>
+            <span class="schema-chip">Best extra: <code>likes</code></span>
+            <span class="schema-chip">Best extra: <code>timestamp</code></span>
+        </div>
     </div>
     """,
     unsafe_allow_html=True,
 )
 
 st.sidebar.markdown("### Visual mode")
-theme_is_night = st.sidebar.toggle(
-    "Campaign night",
-    value=st.session_state["theme_mode"],
-    help="Switch between a bright editorial look and a darker campaign-night theme.",
+theme_mode = st.sidebar.selectbox(
+    "Palette",
+    THEME_OPTIONS,
+    index=THEME_OPTIONS.index(st.session_state["theme_mode"])
+    if st.session_state["theme_mode"] in THEME_OPTIONS
+    else 0,
+    help="Pick the visual mood that fits the story you want to tell.",
 )
-st.session_state["theme_mode"] = theme_is_night
-theme_mode = "Campaign Night" if theme_is_night else "Editorial"
+st.session_state["theme_mode"] = theme_mode
+
+theme_caption = {
+    "Editorial Dawn": "Bright, premium, and airy.",
+    "Campaign Night": "Bold, cinematic, and high-contrast.",
+    "Sunset Pulse": "Warm, modern, and brand-forward.",
+}.get(theme_mode, "Bright, premium, and airy.")
+
+st.sidebar.markdown(
+    f"<div class='theme-toggle'><label>Theme mood</label><br><small>{escape_html(theme_caption)}</small></div>",
+    unsafe_allow_html=True,
+)
 
 load_css(theme_mode)
 
@@ -1732,9 +2024,12 @@ elif data_source == "Fetch from YouTube":
     st.sidebar.markdown("### YouTube connector")
 
     default_key = ""
-    if "YOUTUBE_API_KEY" in st.secrets and st.secrets["YOUTUBE_API_KEY"] != "REPLACE_WITH_YOUR_ACTUAL_API_KEY":
-        default_key = st.secrets["YOUTUBE_API_KEY"]
-        st.sidebar.success("API key loaded from Streamlit secrets.")
+    try:
+        if "YOUTUBE_API_KEY" in st.secrets and st.secrets["YOUTUBE_API_KEY"] != "REPLACE_WITH_YOUR_ACTUAL_API_KEY":
+            default_key = st.secrets["YOUTUBE_API_KEY"]
+            st.sidebar.success("API key loaded from Streamlit secrets.")
+    except Exception:
+        default_key = ""
 
     api_key = default_key
     if not api_key:
