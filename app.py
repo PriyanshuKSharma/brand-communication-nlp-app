@@ -23,6 +23,18 @@ SOURCE_OPTIONS = (
     "Upload CSV",
     "Fetch from YouTube",
 )
+MODE_ROUTE_MAP = {
+    "landing": "Landing page",
+    "sample": "Use sample data",
+    "upload": "Upload CSV",
+    "youtube": "Fetch from YouTube",
+}
+MODE_LABELS = {
+    "Landing page": "Landing",
+    "Use sample data": "Sample",
+    "Upload CSV": "Upload",
+    "Fetch from YouTube": "YouTube",
+}
 THEME_OPTIONS = ("Editorial Dawn", "Campaign Night", "Sunset Pulse")
 
 
@@ -267,6 +279,23 @@ def load_css(theme_mode):
             padding-bottom: 0.1rem;
         }
 
+        .floating-nav-label {
+            flex: 0 0 auto;
+            color: rgba(247, 244, 238, 0.72) !important;
+            font-size: 0.72rem;
+            font-weight: 800;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            padding: 0 0.25rem;
+        }
+
+        .floating-nav-divider {
+            flex: 0 0 1px;
+            height: 22px;
+            background: rgba(255, 255, 255, 0.12);
+            margin: 0 0.2rem;
+        }
+
         .floating-nav a {
             flex: 1 0 auto;
             display: inline-flex;
@@ -280,8 +309,8 @@ def load_css(theme_mode):
             font-weight: 700;
             font-size: 0.88rem;
             color: #f7f4ee !important;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            background: rgba(255, 255, 255, 0.07);
             transition: transform 160ms ease, background 160ms ease, border-color 160ms ease;
         }
 
@@ -1986,44 +2015,75 @@ def render_algorithm_card(title, subtitle, body, bullets):
     )
 
 
-def render_floating_nav(mode_hint):
+def render_bottom_nav(mode_hint):
     if mode_hint == "Landing page":
-        items = [
-            ("#top", "Top", True),
-            ("#project-overview", "Overview", False),
-            ("#methods-overview", "Algorithms", False),
-            ("#input-shape", "Input", False),
-            ("#future-insights", "Insights", False),
+        section_items = [
+            ("#top", "Top"),
+            ("#project-overview", "Overview"),
+            ("#methods-overview", "Algorithms"),
+            ("#input-shape", "Input"),
         ]
     else:
-        items = [
-            ("#top", "Top", True),
-            ("#mission-control", "Mission", False),
-            ("#topic-radar", "Topics", False),
-            ("#algorithm-lab", "Methods", False),
-            ("#strategy-studio", "Strategy", False),
+        section_items = [
+            ("#top", "Top"),
+            ("#mission-control", "Mission"),
+            ("#topic-radar", "Topics"),
+            ("#algorithm-lab", "Methods"),
+            ("#strategy-studio", "Strategy"),
         ]
 
-    nav_links = "".join(
+    mode_items = [
+        ("?mode=landing", "Landing page", mode_hint == "Landing page"),
+        ("?mode=sample", "Use sample data", mode_hint == "Use sample data"),
+        ("?mode=upload", "Upload CSV", mode_hint == "Upload CSV"),
+        ("?mode=youtube", "Fetch from YouTube", mode_hint == "Fetch from YouTube"),
+    ]
+
+    mode_links = "".join(
         "<a class='{cls}' href='{href}'>{label}</a>".format(
-            cls="primary" if is_primary else "",
+            cls="primary" if is_active else "",
             href=escape_html(href),
             label=escape_html(label),
         )
-        for href, label, is_primary in items
+        for href, label, is_active in mode_items
+    )
+    section_links = "".join(
+        "<a href='{href}'>{label}</a>".format(
+            href=escape_html(href),
+            label=escape_html(label),
+        )
+        for href, label in section_items
     )
     st.markdown(
         """
         <div class="floating-nav" aria-label="Quick navigation">
-            <div class="floating-nav-inner">{links}</div>
+            <div class="floating-nav-inner">
+                <span class="floating-nav-label">Mode</span>
+                {mode_links}
+                <span class="floating-nav-divider"></span>
+                <span class="floating-nav-label">Jump to</span>
+                {section_links}
+            </div>
         </div>
-        """.format(links=nav_links),
+        """.format(mode_links=mode_links, section_links=section_links),
         unsafe_allow_html=True,
     )
 
 
 def set_data_source(mode):
     st.session_state["data_source"] = mode
+    route_lookup = {
+        "Landing page": "landing",
+        "Use sample data": "sample",
+        "Upload CSV": "upload",
+        "Fetch from YouTube": "youtube",
+    }
+    route = route_lookup.get(mode)
+    if route:
+        try:
+            st.query_params["mode"] = route
+        except Exception:
+            pass
 
 
 def render_landing_page(mode_hint):
@@ -2905,30 +2965,36 @@ st.sidebar.markdown(
 
 load_css(theme_mode)
 
+try:
+    selected_mode = st.query_params.get("mode", None)
+except Exception:
+    selected_mode = None
+if isinstance(selected_mode, list):
+    selected_mode = selected_mode[0] if selected_mode else None
+if selected_mode in MODE_ROUTE_MAP:
+    st.session_state["data_source"] = MODE_ROUTE_MAP[selected_mode]
+
+data_source = st.session_state.get("data_source", "Landing page")
+source_df = None
+source_label = "Campaign dataset"
+
 st.sidebar.markdown(
     """
-    <div class="sidebar-panel">
-        <h4>Workspace</h4>
-        <p>Pick a starting point for the analysis.</p>
+    <div class="upload-note">
+        <strong>Use the bottom bar to switch modes.</strong><br><br>
+        <div class="schema-row">
+            <span class="schema-chip">Landing</span>
+            <span class="schema-chip">Sample</span>
+            <span class="schema-chip">Upload</span>
+            <span class="schema-chip">YouTube</span>
+        </div>
     </div>
     """,
     unsafe_allow_html=True,
 )
 
-data_source = st.sidebar.radio("Mode", SOURCE_OPTIONS, key="data_source")
-source_df = None
-source_label = "Campaign dataset"
-
 if data_source == "Landing page":
-    st.sidebar.markdown(
-        """
-        <div class="sidebar-panel">
-            <h4>Landing page</h4>
-            <p>Explore the product story first.</p>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
+    st.sidebar.info("Explore the product story first.")
     st.sidebar.button(
         "Open sample cockpit",
         width="stretch",
@@ -3100,4 +3166,4 @@ if source_df is not None:
 else:
     render_landing_page(data_source)
 
-render_floating_nav(data_source)
+render_bottom_nav(data_source)
