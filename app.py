@@ -1108,7 +1108,8 @@ def load_css(theme_mode):
 
         @media (max-width: 900px) {
             .block-container {
-                padding-top: 1.1rem;
+                padding-top: 1rem;
+                padding-bottom: 2.5rem;
             }
 
             .hero-shell {
@@ -1120,10 +1121,118 @@ def load_css(theme_mode):
                 font-size: 2.3rem;
             }
 
+            .hero-copy,
+            .section-hero p,
+            .helper-text,
+            .caption-text,
+            .metric-note,
+            .forecast-card p,
+            .proposal-card p,
+            .explain-card,
+            .landing-note,
+            .upload-note {
+                font-size: 0.92rem;
+                line-height: 1.6;
+            }
+
+            .feature-card,
+            .story-card,
+            .data-card,
+            .quote-card,
+            .reco-card,
+            .topic-card,
+            .metric-card,
+            .forecast-card,
+            .proposal-card {
+                padding: 1rem;
+                border-radius: 20px;
+            }
+
+            .feature-card {
+                min-height: auto;
+            }
+
             .hero-grid,
             .mini-strip,
             .board-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .mini-strip {
+                gap: 0.85rem;
+                margin-top: 1.1rem;
+            }
+
+            .schema-strip,
+            .sidebar-chip-row,
+            .theme-preview,
+            .theme-meta {
+                gap: 0.35rem;
+            }
+
+            .section-hero {
+                margin-top: 1.5rem;
+                margin-bottom: 0.9rem;
+            }
+
+            .feature-card h3,
+            .story-card h3,
+            .data-card h3,
+            .quote-card h3,
+            .reco-card h3,
+            .topic-card h3 {
+                font-size: 1.08rem;
+            }
+
+            [data-testid="stMetric"] {
+                padding: 0.85rem 0.9rem;
+            }
+
+            .metric-value {
+                font-size: 1.7rem;
+            }
+
+            .visual-module,
+            .sidebar-panel,
+            .upload-note {
+                padding: 0.85rem 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .block-container {
+                padding-left: 0.65rem;
+                padding-right: 0.65rem;
+            }
+
+            .hero-title {
+                font-size: 1.95rem;
+                line-height: 1;
+            }
+
+            .hero-copy {
+                font-size: 0.9rem;
+            }
+
+            .signal-pill,
+            .sidebar-chip,
+            .theme-meta span {
+                font-size: 0.76rem;
+                padding: 0.35rem 0.55rem;
+            }
+
+            .feature-icon {
+                width: 38px;
+                height: 38px;
+                font-size: 1rem;
+            }
+
+            .mini-stat strong {
+                font-size: 1.45rem;
+            }
+
+            .mini-stat span {
+                font-size: 0.82rem;
             }
         }
 
