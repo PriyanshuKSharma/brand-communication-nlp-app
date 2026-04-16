@@ -207,7 +207,7 @@ def load_css(theme_mode):
         .stTabs [data-baseweb="tab-list"] {
             gap: 0.75rem;
             margin-top: 0.75rem;
-            margin-bottom: 1rem;
+            margin-bottom: 1.1rem;
         }
 
         .stTabs [data-baseweb="tab"] {
@@ -244,14 +244,14 @@ def load_css(theme_mode):
         }
 
         .hero-shell {
-            padding: 2.25rem;
+            padding: 2.5rem;
             border-radius: 30px;
             background: __HERO_BG__;
             border: 1px solid __HERO_BORDER__;
             box-shadow: var(--shadow);
             overflow: hidden;
             position: relative;
-            margin-bottom: 1.4rem;
+            margin-bottom: 1.8rem;
         }
 
         .hero-shell::after {
@@ -267,7 +267,7 @@ def load_css(theme_mode):
         .hero-grid {
             display: grid;
             grid-template-columns: 1.2fr 0.92fr;
-            gap: 1.7rem;
+            gap: 2rem;
             align-items: center;
         }
 
@@ -303,7 +303,7 @@ def load_css(theme_mode):
             font-size: 1.06rem;
             line-height: 1.7;
             color: var(--muted);
-            margin-bottom: 1rem;
+            margin-bottom: 1.15rem;
         }
 
         .hero-actions {
@@ -318,7 +318,7 @@ def load_css(theme_mode):
             display: flex;
             flex-wrap: wrap;
             gap: 0.65rem;
-            margin-top: 1.25rem;
+            margin-top: 1.35rem;
         }
 
         .signal-pill {
@@ -409,8 +409,8 @@ def load_css(theme_mode):
         }
 
         .section-label {
-            margin-top: 2.1rem;
-            margin-bottom: 0.95rem;
+            margin-top: 2.35rem;
+            margin-bottom: 1rem;
             font-size: 0.85rem;
             font-weight: 700;
             letter-spacing: 0.12em;
@@ -437,7 +437,7 @@ def load_css(theme_mode):
             background: __CARD_BG__;
             border: 1px solid __CARD_BORDER__;
             border-radius: 24px;
-            padding: 1.4rem;
+            padding: 1.8rem;
             box-shadow: var(--shadow);
             position: relative;
             overflow: hidden;
@@ -448,7 +448,9 @@ def load_css(theme_mode):
         }
 
         .topic-card {
-            min-height: 250px;
+            min-height: 0;
+            margin-bottom: 1rem;
+            padding: 1.6rem;
         }
 
         .feature-card::before,
@@ -485,8 +487,9 @@ def load_css(theme_mode):
         .reco-card h3,
         .data-card h3 {
             margin-top: 0;
-            margin-bottom: 0.55rem;
-            font-size: 1.2rem;
+            margin-bottom: 0.85rem;
+            font-size: 1.28rem;
+            line-height: 1.14;
         }
 
         .topic-headline {
@@ -494,7 +497,7 @@ def load_css(theme_mode):
             align-items: flex-start;
             justify-content: space-between;
             gap: 1rem;
-            margin-bottom: 0.65rem;
+            margin-bottom: 0.85rem;
         }
 
         .topic-kicker {
@@ -513,7 +516,7 @@ def load_css(theme_mode):
         }
 
         .topic-summary {
-            margin: 0 0 0.95rem 0;
+            margin: 0 0 1rem 0;
             color: var(--muted);
             line-height: 1.55;
         }
@@ -521,8 +524,8 @@ def load_css(theme_mode):
         .topic-chip-row {
             display: flex;
             flex-wrap: wrap;
-            gap: 0.45rem;
-            margin-bottom: 0.75rem;
+            gap: 0.6rem;
+            margin-bottom: 1.1rem;
         }
 
         .topic-badge {
@@ -563,13 +566,14 @@ def load_css(theme_mode):
         .reco-card p,
         .data-card p {
             color: var(--muted);
-            line-height: 1.65;
+            line-height: 1.78;
             margin-bottom: 0;
         }
 
         .feature-card {
             position: relative;
             overflow: hidden;
+            min-height: 290px;
         }
 
         .feature-card::after {
@@ -608,13 +612,42 @@ def load_css(theme_mode):
             align-items: center;
             justify-content: center;
             background: rgba(17, 32, 59, 0.06);
-            margin-bottom: 0.9rem;
+            margin-bottom: 1rem;
             font-size: 1.2rem;
+        }
+
+        .landing-note {
+            margin-top: 1.45rem;
+            padding: 1.15rem 1.2rem;
+            border-radius: 20px;
+            background: rgba(17, 32, 59, 0.05);
+            border: 1px solid rgba(17, 32, 59, 0.08);
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        .landing-note strong {
+            display: block;
+            margin-bottom: 0.4rem;
+            color: var(--ink);
+            font-size: 1rem;
+        }
+
+        .landing-note code {
+            display: inline-block;
+            padding: 0.18rem 0.5rem;
+            margin: 0.1rem 0.15rem 0.1rem 0;
+            border-radius: 999px;
+            background: rgba(255, 107, 53, 0.12);
+            border: 1px solid rgba(255, 107, 53, 0.18);
+            color: var(--ink);
+            font-weight: 700;
+            font-size: 0.86rem;
         }
 
         .metric-card {
             border-radius: 24px;
-            padding: 1.15rem;
+            padding: 1.2rem;
             background: rgba(255, 252, 247, 0.82);
             border: 1px solid rgba(17, 32, 59, 0.08);
             box-shadow: var(--shadow);
@@ -655,13 +688,29 @@ def load_css(theme_mode):
 
         .topic-chip {
             display: inline-flex;
-            padding: 0.38rem 0.68rem;
+            padding: 0.42rem 0.75rem;
             border-radius: 999px;
             background: rgba(17, 32, 59, 0.06);
             border: 1px solid rgba(17, 32, 59, 0.08);
             font-size: 0.83rem;
             font-weight: 700;
             line-height: 1;
+        }
+
+        .topic-example {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(17, 32, 59, 0.08);
+        }
+
+        .topic-example strong {
+            display: inline-block;
+            margin-bottom: 0.35rem;
+        }
+
+        .topic-example p {
+            margin: 0;
+            line-height: 1.6;
         }
 
         .quote-card blockquote {
@@ -729,16 +778,16 @@ def load_css(theme_mode):
         .mini-strip {
             display: grid;
             grid-template-columns: repeat(4, minmax(0, 1fr));
-            gap: 1rem;
-            margin-top: 1.2rem;
+            gap: 1.35rem;
+            margin-top: 1.95rem;
         }
 
         .schema-strip {
             display: flex;
             flex-wrap: wrap;
-            gap: 0.6rem;
-            margin-top: 0.4rem;
-            margin-bottom: 0.35rem;
+            gap: 0.9rem;
+            margin-top: 0.8rem;
+            margin-bottom: 0.8rem;
         }
 
         .mini-stat {
@@ -763,11 +812,11 @@ def load_css(theme_mode):
         }
 
         .section-hero {
-            margin: 2rem 0 1rem;
+            margin: 2.5rem 0 1.2rem;
             display: flex;
             align-items: end;
             justify-content: space-between;
-            gap: 1rem;
+            gap: 1.4rem;
             flex-wrap: wrap;
         }
 
@@ -783,7 +832,7 @@ def load_css(theme_mode):
         }
 
         .upload-note {
-            padding: 1rem 1.1rem;
+            padding: 1.1rem 1.15rem;
             border-radius: 20px;
             background: linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.06));
             border: 1px solid rgba(255, 255, 255, 0.18);
@@ -1361,7 +1410,7 @@ def render_topic_card(summary):
     primary_label = ", ".join(keywords[:3]) if keywords else "Unclear lane"
 
     example_markup = "".join(
-        "<p style='margin-top:0.7rem;'><strong>Signal:</strong> {0}</p>".format(
+        "<div class='topic-example'><p><strong>Signal:</strong> {0}</p></div>".format(
             escape_html(example)
         )
         for example in summary["examples"]
@@ -1520,7 +1569,7 @@ def render_landing_page(mode_hint):
     with action_col:
         st.button(
             "Launch sample cockpit",
-            use_container_width=True,
+            width="stretch",
             on_click=set_data_source,
             args=("Use sample data",),
         )
@@ -1532,12 +1581,14 @@ def render_landing_page(mode_hint):
 
     st.markdown(
         """
-        <div class="section-label accent" style="margin-top:1.35rem;">Data contract</div>
-        <div class="schema-strip">
-            <span class="signal-pill accent">Required: comment_text</span>
-            <span class="signal-pill">Best extra: platform</span>
-            <span class="signal-pill">Best extra: likes</span>
-            <span class="signal-pill teal">Best extra: timestamp</span>
+        <div class="landing-note">
+            <strong>Data contract</strong>
+            <div class="schema-strip">
+                <span class="signal-pill accent">Required: comment_text</span>
+                <span class="signal-pill">Best extra: platform</span>
+                <span class="signal-pill">Best extra: likes</span>
+                <span class="signal-pill teal">Best extra: timestamp</span>
+            </div>
         </div>
         """,
         unsafe_allow_html=True,
@@ -1554,7 +1605,7 @@ def render_landing_page(mode_hint):
         """,
         unsafe_allow_html=True,
     )
-    feature_columns = st.columns(3)
+    feature_columns = st.columns(3, gap="large")
     feature_cards = [
         (
             "Audience lens",
@@ -1593,34 +1644,80 @@ def render_landing_page(mode_hint):
             unsafe_allow_html=True,
         )
 
-    story_left, story_right = st.columns([1.15, 0.85])
-    with story_left:
-        st.markdown(
-            """
-            <div class="story-card">
-                <div class="feature-kicker secondary">How it works</div>
-                <h3>From social reactions to campaign moves</h3>
-                <p><strong>1. Ingest.</strong> Bring in a CSV, load the demo, or connect a YouTube campaign.</p>
-                <p style="margin-top:0.65rem;"><strong>2. Decode.</strong> The app scores sentiment, detects audience questions, and groups the conversation into narrative lanes.</p>
-                <p style="margin-top:0.65rem;"><strong>3. Direct.</strong> Strategy cards tell the team what to repair, what to amplify, and what to monitor next.</p>
+    st.markdown(
+        """
+        <div class="section-label secondary" style="margin-top:2.6rem;">How it works</div>
+        <div class="section-hero" style="margin-top:0; margin-bottom:1.2rem;">
+            <div>
+                <h2>From social reactions to campaign moves</h2>
+                <p>Each step is separated so the product story reads like a premium workflow instead of one packed block.</p>
             </div>
-            """,
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+    step_columns = st.columns(3, gap="large")
+    step_cards = [
+        (
+            "01",
+            "Ingest",
+            "Bring in a CSV, load the demo, or connect a YouTube campaign.",
+        ),
+        (
+            "02",
+            "Decode",
+            "The app scores sentiment, detects audience questions, and groups the conversation into narrative lanes.",
+        ),
+        (
+            "03",
+            "Direct",
+            "Strategy cards tell the team what to repair, what to amplify, and what to monitor next.",
+        ),
+    ]
+    for column, (step, title, copy) in zip(step_columns, step_cards):
+        column.markdown(
+            """
+            <div class="feature-card">
+                <div class="feature-kicker secondary">Step {step}</div>
+                <div class="feature-icon">{step}</div>
+                <h3>{title}</h3>
+                <p>{copy}</p>
+            </div>
+            """.format(
+                step=escape_html(step),
+                title=escape_html(title),
+                copy=escape_html(copy),
+            ),
             unsafe_allow_html=True,
         )
-    with story_right:
-        st.markdown(
-            """
-            <div class="data-card">
-                <div class="feature-kicker gold">Input shape</div>
-                <h3>What the app expects</h3>
-                <p><strong>Required:</strong> `comment_text`</p>
-                <p style="margin-top:0.55rem;"><strong>Helpful:</strong> `platform`, `likes`, `timestamp`, `published_at`</p>
-                <p style="margin-top:0.55rem;">If those extra columns are missing, the app still works and fills in smart defaults.</p>
+
+    st.markdown(
+        """
+        <div class="section-label accent" style="margin-top:2.4rem;">Input shape</div>
+        <div class="data-card">
+            <div class="feature-kicker gold">What the app expects</div>
+            <h3>Required and helpful columns</h3>
+            <p>Required: <code>comment_text</code></p>
+            <div class="schema-strip" style="margin-top:1rem; margin-bottom:1rem;">
+                <span class="signal-pill">platform</span>
+                <span class="signal-pill">likes</span>
+                <span class="signal-pill teal">timestamp</span>
+                <span class="signal-pill accent">published_at</span>
             </div>
-            """,
-            unsafe_allow_html=True,
-        )
-        st.code("comment_text, platform, likes, timestamp", language="text")
+            <p>If those extra columns are missing, the app still works and fills in smart defaults.</p>
+        </div>
+        <div class="landing-note">
+            <strong>Quick reference</strong>
+            <div class="schema-strip">
+                <span class="signal-pill accent">comment_text</span>
+                <span class="signal-pill">platform</span>
+                <span class="signal-pill">likes</span>
+                <span class="signal-pill teal">timestamp</span>
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
 
 def render_dashboard(df, topic_keywords, actual_topics, source_label):
@@ -1662,12 +1759,12 @@ def render_dashboard(df, topic_keywords, actual_topics, source_label):
             data=df.to_csv(index=False).encode("utf-8"),
             file_name="brand_intel_studio_analysis.csv",
             mime="text/csv",
-            use_container_width=True,
+            width="stretch",
         )
     with action_col_2:
         st.button(
             "Return to landing",
-            use_container_width=True,
+            width="stretch",
             on_click=set_data_source,
             args=("Landing page",),
         )
@@ -1740,7 +1837,7 @@ def render_dashboard(df, topic_keywords, actual_topics, source_label):
                 .head(6)
             )
             st.markdown("<div class='section-label'>High-signal comments</div>", unsafe_allow_html=True)
-            st.dataframe(top_rows, use_container_width=True, hide_index=True)
+            st.dataframe(top_rows, width="stretch", hide_index=True)
 
     with signal_tab:
         quote_left, quote_right = st.columns(2)
@@ -1790,7 +1887,7 @@ def render_dashboard(df, topic_keywords, actual_topics, source_label):
                         "sentiment_score",
                     ]
                 ],
-                use_container_width=True,
+                width="stretch",
                 hide_index=True,
             )
 
@@ -1821,7 +1918,7 @@ def render_dashboard(df, topic_keywords, actual_topics, source_label):
                         "archetype",
                     ]
                 ],
-                use_container_width=True,
+                width="stretch",
                 hide_index=True,
             )
 
@@ -1837,12 +1934,8 @@ def render_dashboard(df, topic_keywords, actual_topics, source_label):
                 ),
                 unsafe_allow_html=True,
             )
-            for start in range(0, len(topic_summaries), 2):
-                row_items = topic_summaries[start : start + 2]
-                row_columns = st.columns(len(row_items))
-                for column, summary in zip(row_columns, row_items):
-                    with column:
-                        render_topic_card(summary)
+            for summary in topic_summaries:
+                render_topic_card(summary)
 
     with language_tab:
         positive_keywords = keyword_frequency(
@@ -1861,7 +1954,7 @@ def render_dashboard(df, topic_keywords, actual_topics, source_label):
                 st.info("No strong positive keyword pattern surfaced yet.")
             else:
                 st.bar_chart(positive_keywords.set_index("keyword"))
-                st.dataframe(positive_keywords, use_container_width=True, hide_index=True)
+                st.dataframe(positive_keywords, width="stretch", hide_index=True)
 
         with keyword_right:
             st.markdown("<div class='section-label'>Words driving friction</div>", unsafe_allow_html=True)
@@ -1869,7 +1962,7 @@ def render_dashboard(df, topic_keywords, actual_topics, source_label):
                 st.info("No strong negative keyword pattern surfaced yet.")
             else:
                 st.bar_chart(negative_keywords.set_index("keyword"))
-                st.dataframe(negative_keywords, use_container_width=True, hide_index=True)
+                st.dataframe(negative_keywords, width="stretch", hide_index=True)
 
         question_examples = df[df["question_flag"]].head(6)
         st.markdown("<div class='section-label'>Questions the audience is already asking</div>", unsafe_allow_html=True)
@@ -1886,7 +1979,7 @@ def render_dashboard(df, topic_keywords, actual_topics, source_label):
         else:
             st.dataframe(
                 question_examples[["comment_text", "platform", "likes"]],
-                use_container_width=True,
+                width="stretch",
                 hide_index=True,
             )
 
@@ -1938,7 +2031,7 @@ def render_dashboard(df, topic_keywords, actual_topics, source_label):
             st.markdown("<div class='section-label'>Shareable data slice</div>", unsafe_allow_html=True)
             st.dataframe(
                 df[export_columns].head(12),
-                use_container_width=True,
+                width="stretch",
                 hide_index=True,
             )
 
