@@ -2132,8 +2132,6 @@ def render_bottom_nav(mode_hint):
             """,
         ),
     ]
-    active_mode = next((label for href, label, active in mode_items if active), "Landing page")
-
     mode_links = "".join(
         "<a class='{cls}' href='{href}' aria-current='{current}'>{icon}<span class='nav-copy'>{label}</span></a>".format(
             cls="primary" if is_active else "",
