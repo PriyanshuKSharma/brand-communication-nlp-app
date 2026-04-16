@@ -48,7 +48,6 @@ def load_css(theme_mode):
         """
     )
     card_bg = "rgba(255, 252, 247, 0.82)" if not night_mode else "rgba(13, 22, 38, 0.82)"
-    card_text = "#11203b" if not night_mode else "#f5f7fb"
     muted = "#5c6270" if not night_mode else "rgba(245, 247, 251, 0.72)"
     app_ink = "#11203b" if not night_mode else "#f5f7fb"
     sidebar_bg = (
@@ -64,26 +63,25 @@ def load_css(theme_mode):
     border_soft = "rgba(17, 32, 59, 0.08)" if not night_mode else "rgba(255, 255, 255, 0.10)"
     panel_shadow = "0 22px 60px rgba(17, 32, 59, 0.12)" if not night_mode else "0 22px 60px rgba(0, 0, 0, 0.28)"
     card_panel = card_bg
-    st.markdown(
-        """
+    css = """
         <style>
         @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Space+Grotesk:wght@400;500;700&display=swap');
 
         :root {
             --bg: #f4efe5;
-            --ink: %s;
-            --panel: %s;
-            --muted: %s;
+            --ink: __INK__;
+            --panel: __PANEL__;
+            --muted: __MUTED__;
             --accent: #ff6b35;
             --accent-2: #138a72;
             --gold: #f2a900;
-            --line: %s;
-            --shadow: %s;
+            --line: __LINE__;
+            --shadow: __SHADOW__;
         }
 
         .stApp {
-            background: %s;
-            color: %s;
+            background: __APP_BG__;
+            color: __APP_INK__;
         }
 
         [data-testid="stAppViewContainer"] {
@@ -119,7 +117,7 @@ def load_css(theme_mode):
         }
 
         section[data-testid="stSidebar"] {
-            background: %s;
+            background: __SIDEBAR_BG__;
             border-right: 1px solid rgba(255, 255, 255, 0.08);
         }
 
@@ -200,8 +198,8 @@ def load_css(theme_mode):
         .hero-shell {
             padding: 2rem;
             border-radius: 30px;
-            background: %s;
-            border: 1px solid %s;
+            background: __HERO_BG__;
+            border: 1px solid __HERO_BORDER__;
             box-shadow: var(--shadow);
             overflow: hidden;
             position: relative;
@@ -299,7 +297,7 @@ def load_css(theme_mode):
         .signal-board {
             border-radius: 28px;
             padding: 1.15rem;
-            background: %s;
+            background: __BOARD_BG__;
             color: #f7f4ee;
             box-shadow: 0 28px 60px rgba(17, 32, 59, 0.18);
             position: relative;
@@ -379,8 +377,8 @@ def load_css(theme_mode):
         .reco-card,
         .data-card {
             height: 100%;
-            background: %s;
-            border: 1px solid %s;
+            background: __CARD_BG__;
+            border: 1px solid __CARD_BORDER__;
             border-radius: 24px;
             padding: 1.25rem;
             box-shadow: var(--shadow);
@@ -539,8 +537,8 @@ def load_css(theme_mode):
         .mini-stat {
             border-radius: 20px;
             padding: 0.95rem 1rem;
-            background: %s;
-            border: 1px solid %s;
+            background: __MINI_BG__;
+            border: 1px solid __MINI_BORDER__;
             box-shadow: 0 12px 30px rgba(17, 32, 59, 0.08);
         }
 
@@ -641,25 +639,31 @@ def load_css(theme_mode):
             50% { transform: translateY(-6px); }
         }
         </style>
-        """ % (
-            app_ink,
-            card_panel,
-            muted,
-            border_soft,
-            panel_shadow,
-            app_bg,
-            app_ink,
-            sidebar_bg,
+        """
+    css = (
+        css.replace("__INK__", app_ink)
+        .replace("__PANEL__", card_panel)
+        .replace("__MUTED__", muted)
+        .replace("__LINE__", border_soft)
+        .replace("__SHADOW__", panel_shadow)
+        .replace("__APP_BG__", app_bg)
+        .replace("__APP_INK__", app_ink)
+        .replace("__SIDEBAR_BG__", sidebar_bg)
+        .replace(
+            "__HERO_BG__",
             "linear-gradient(135deg, rgba(255, 248, 240, 0.95) 0%, rgba(255, 255, 255, 0.74) 52%, rgba(226, 246, 241, 0.9) 100%)"
             if not night_mode
             else "linear-gradient(135deg, rgba(13, 22, 38, 0.96) 0%, rgba(20, 30, 50, 0.92) 52%, rgba(12, 62, 53, 0.82) 100%)",
-            border_soft,
-            board_bg,
-            card_panel,
-            border_soft,
-            "rgba(255, 255, 255, 0.66)" if not night_mode else "rgba(255, 255, 255, 0.08)",
-            border_soft,
-        ),
+        )
+        .replace("__HERO_BORDER__", border_soft)
+        .replace("__BOARD_BG__", board_bg)
+        .replace("__CARD_BG__", card_panel)
+        .replace("__CARD_BORDER__", border_soft)
+        .replace("__MINI_BG__", "rgba(255, 255, 255, 0.66)" if not night_mode else "rgba(255, 255, 255, 0.08)")
+        .replace("__MINI_BORDER__", border_soft)
+    )
+    st.markdown(
+        css,
         unsafe_allow_html=True,
     )
 
@@ -1664,12 +1668,12 @@ def render_dashboard(df, topic_keywords, actual_topics, source_label):
             )
 
 
-load_css()
-
 if "data_source" not in st.session_state:
     st.session_state["data_source"] = "Landing page"
 if "youtube_data" not in st.session_state:
     st.session_state["youtube_data"] = None
+if "theme_mode" not in st.session_state:
+    st.session_state["theme_mode"] = False
 
 st.sidebar.markdown("## Brand Intel Studio")
 st.sidebar.markdown(
@@ -1682,6 +1686,17 @@ st.sidebar.markdown(
     """,
     unsafe_allow_html=True,
 )
+
+st.sidebar.markdown("### Visual mode")
+theme_is_night = st.sidebar.toggle(
+    "Campaign night",
+    value=st.session_state["theme_mode"],
+    help="Switch between a bright editorial look and a darker campaign-night theme.",
+)
+st.session_state["theme_mode"] = theme_is_night
+theme_mode = "Campaign Night" if theme_is_night else "Editorial"
+
+load_css(theme_mode)
 
 data_source = st.sidebar.radio("Experience mode", SOURCE_OPTIONS, key="data_source")
 source_df = None
