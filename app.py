@@ -686,6 +686,77 @@ def load_css(theme_mode):
             line-height: 1.55;
         }
 
+        .explain-card {
+            margin-top: 0.8rem;
+            padding: 1rem 1.05rem;
+            border-radius: 20px;
+            background: rgba(17, 32, 59, 0.05);
+            border: 1px solid rgba(17, 32, 59, 0.08);
+            color: var(--muted);
+            line-height: 1.65;
+        }
+
+        .explain-card strong {
+            display: block;
+            margin-bottom: 0.35rem;
+            color: var(--ink);
+            font-size: 1rem;
+        }
+
+        .explain-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .forecast-card {
+            height: 100%;
+            padding: 1.15rem 1.2rem;
+            border-radius: 22px;
+            border: 1px solid rgba(17, 32, 59, 0.08);
+            background: rgba(255, 252, 247, 0.84);
+            box-shadow: var(--shadow);
+        }
+
+        .forecast-card h4 {
+            margin: 0 0 0.4rem 0;
+            font-size: 1.05rem;
+        }
+
+        .forecast-card p {
+            margin: 0;
+            line-height: 1.65;
+            color: var(--muted);
+        }
+
+        .forecast-card .forecast-value {
+            font-family: 'Fraunces', serif;
+            font-size: 1.65rem;
+            margin: 0.35rem 0 0.5rem 0;
+            color: var(--ink);
+        }
+
+        .proposal-card {
+            height: 100%;
+            padding: 1.15rem 1.2rem;
+            border-radius: 22px;
+            border: 1px solid rgba(17, 32, 59, 0.08);
+            background: rgba(255, 252, 247, 0.84);
+            box-shadow: var(--shadow);
+        }
+
+        .proposal-card h4 {
+            margin: 0 0 0.4rem 0;
+            font-size: 1.05rem;
+        }
+
+        .proposal-card p {
+            margin: 0;
+            line-height: 1.65;
+            color: var(--muted);
+        }
+
         .topic-chip {
             display: inline-flex;
             padding: 0.42rem 0.75rem;
@@ -1422,6 +1493,132 @@ def build_recommendations(df, topic_summaries):
     return recommendations
 
 
+def build_future_insights(df, topic_summaries, pulse):
+    insights = []
+    total = len(df)
+
+    if total == 0:
+        return insights
+
+    if pulse["question_share"] >= 0.18:
+        insights.append(
+            {
+                "title": "Support and FAQ demand",
+                "value": "High",
+                "note": "Open questions are likely to keep rising unless the brand creates a fast-answer content block.",
+                "proposal": "Turn the top 5 recurring questions into a pinned FAQ, short video, or landing-page explainer.",
+            }
+        )
+    else:
+        insights.append(
+            {
+                "title": "Support and FAQ demand",
+                "value": "Stable",
+                "note": "Question load is under control, so the next move is to preserve clarity and watch for new objections.",
+                "proposal": "Keep a weekly question review to catch new friction before it becomes a pattern.",
+            }
+        )
+
+    if topic_summaries:
+        top_topic = topic_summaries[0]
+        top_label = ", ".join(normalize_topic_keywords(top_topic["keywords"], limit=3)) or "Top topic"
+        if top_topic["avg_score"] >= 0.08:
+            insights.append(
+                {
+                    "title": "Content opportunity",
+                    "value": "Push",
+                    "note": "The strongest topic is pulling positive attention, which makes it a good candidate for testimonials, hooks, and campaign messaging.",
+                    "proposal": "Turn {0} into headline copy, ad language, and pinned reply material while the signal is warm.".format(top_label),
+                }
+            )
+        else:
+            insights.append(
+                {
+                    "title": "Content opportunity",
+                    "value": "Repair",
+                    "note": "The top conversation lane has mixed energy, so the brand should answer it with more clarity and proof.",
+                    "proposal": "Create a response asset around {0} and address the concern with examples, pricing context, or support detail.".format(top_label),
+                }
+            )
+
+    if pulse["positive_share"] >= pulse["negative_share"]:
+        insights.append(
+            {
+                "title": "Brand momentum",
+                "value": "Upward",
+                "note": "Positive language currently outpaces friction, so there is room to scale the current message instead of rewriting it.",
+                "proposal": "Reuse audience phrases in social proof, ad headlines, and email openers to keep the momentum visible.",
+            }
+        )
+    else:
+        insights.append(
+            {
+                "title": "Brand momentum",
+                "value": "Needs repair",
+                "note": "Negative pressure is slightly stronger, so the next campaign should prioritize clarity and trust building.",
+                "proposal": "Lead with a clearer offer, a stronger guarantee, or a proof-led explainer before amplifying reach.",
+            }
+        )
+
+    if "timestamp_dt" in df.columns and df["timestamp_dt"].notna().sum() >= 4:
+        timeline = (
+            df.dropna(subset=["timestamp_dt"])
+            .set_index("timestamp_dt")
+            .resample("D")
+            .agg(avg_sentiment=("sentiment_score", "mean"), comment_volume=("comment_text", "count"))
+        )
+        if len(timeline) >= 4:
+            timeline = timeline.reset_index()
+            x = np.arange(len(timeline))
+            trend = np.polyfit(x, timeline["avg_sentiment"].fillna(0).to_numpy(), 1)[0]
+            if trend > 0.01:
+                forecast_value = "Improving"
+                forecast_note = "Sentiment is trending upward over time, so the next week is a good window for a louder marketing push."
+                forecast_proposal = "Schedule a new launch burst, because the audience is already warming to the message."
+            elif trend < -0.01:
+                forecast_value = "Softening"
+                forecast_note = "Sentiment is easing down, which suggests the message should be refreshed before the next push."
+                forecast_proposal = "Refresh the framing, shorten the copy, and answer the top objections before scaling spend."
+            else:
+                forecast_value = "Flat"
+                forecast_note = "The sentiment line is steady, so the next win will come from sharper creative rather than more volume."
+                forecast_proposal = "Test two new hooks and compare which one lifts positive reaction fastest."
+
+            insights.append(
+                {
+                    "title": "7-day signal outlook",
+                    "value": forecast_value,
+                    "note": forecast_note,
+                    "proposal": forecast_proposal,
+                }
+            )
+
+    return insights
+
+
+def render_explanation(title, body, action=None):
+    st.markdown(
+        """
+        <div class="explain-card">
+            <strong>{title}</strong>
+            <div>{body}</div>
+            {action}
+        </div>
+        """.format(
+            title=escape_html(title),
+            body=escape_html(body),
+            action=(
+                "<div style='margin-top:0.6rem; font-weight:700; color: var(--ink);'>Next: {0}</div>".format(
+                    escape_html(action)
+                )
+                if action
+                else ""
+            ),
+        ),
+        unsafe_allow_html=True,
+    )
+
+
 def render_metric_cards(metrics):
     columns = st.columns(len(metrics))
     for column, metric in zip(columns, metrics):
@@ -1863,6 +2060,11 @@ def render_dashboard(df, topic_keywords, actual_topics, source_label):
                 .fillna(0)
             )
             st.bar_chart(sentiment_counts)
+            render_explanation(
+                "What this chart means",
+                "This distribution shows the emotional balance of the conversation. More positive bars mean the message is landing well; more negative bars means the brand should tighten the offer or clarify the story.",
+                "If negative sentiment grows, lead with proof, clarity, and support content.",
+            )
 
             timeline_df = df.dropna(subset=["timestamp_dt"]).copy()
             if len(timeline_df) >= 2:
@@ -1877,6 +2079,11 @@ def render_dashboard(df, topic_keywords, actual_topics, source_label):
                 st.markdown("<div class='section-label'>Timeline pulse</div>", unsafe_allow_html=True)
                 st.line_chart(trend[["average_sentiment"]])
                 st.bar_chart(trend[["comment_volume"]])
+                render_explanation(
+                    "Why this matters",
+                    "The line shows whether sentiment is improving or declining over time, while the bars show whether attention is rising. Together, they tell you if the campaign is getting stronger or simply louder.",
+                    "Use the slope to decide whether to scale the current message or refresh it.",
+                )
             else:
                 st.markdown(
                     """
@@ -1892,10 +2099,20 @@ def render_dashboard(df, topic_keywords, actual_topics, source_label):
             st.markdown("<div class='section-label'>Audience posture</div>", unsafe_allow_html=True)
             archetype_counts = df["archetype"].value_counts()
             st.bar_chart(archetype_counts)
+            render_explanation(
+                "Audience posture",
+                "This chart shows how people are behaving in the conversation: advocates are helping the brand, observers are just watching, and questions or risk signals show where attention needs a response.",
+                "If questions or risk signals grow, answer them before the next campaign push.",
+            )
 
             st.markdown("<div class='section-label'>Platform spread</div>", unsafe_allow_html=True)
             platform_counts = df["platform"].fillna("Unknown").value_counts()
             st.bar_chart(platform_counts)
+            render_explanation(
+                "Platform spread",
+                "This view shows where the conversation is happening. A healthy mix means the message travels well; a single dominant platform means you should tailor creative to that channel's format.",
+                "Repurpose the strongest language for the busiest platform first.",
+            )
 
             top_rows = (
                 df.sort_values(["likes", "sentiment_score"], ascending=[False, False])
@@ -1927,6 +2144,11 @@ def render_dashboard(df, topic_keywords, actual_topics, source_label):
                 ["High voltage", "Active", "Calm"]
             ).fillna(0)
             st.bar_chart(energy_counts)
+            render_explanation(
+                "Emotion intensity",
+                "High voltage comments usually indicate strong opinions and strong sharing potential. Calm comments mean the topic is present, but not yet forcing a reaction.",
+                "Turn high-voltage language into hooks, responses, and paid creative.",
+            )
 
             selected_sentiment = st.selectbox(
                 "Comment lane",
@@ -1956,6 +2178,11 @@ def render_dashboard(df, topic_keywords, actual_topics, source_label):
                 width="stretch",
                 hide_index=True,
             )
+            render_explanation(
+                "Comment explorer",
+                "This table lets you inspect the raw comments behind the charts. It is useful for verifying whether a topic is genuinely important or just a statistical bump.",
+                "Use the filter to isolate positive, neutral, or negative comments before writing replies.",
+            )
 
         with detail_right:
             st.markdown("<div class='section-label'>Engagement by sentiment</div>", unsafe_allow_html=True)
@@ -1966,6 +2193,11 @@ def render_dashboard(df, topic_keywords, actual_topics, source_label):
                 .fillna(0)
             )
             st.bar_chart(engagement)
+            render_explanation(
+                "Engagement by sentiment",
+                "This chart checks which tone gets the most likes. If positive comments outperform negative ones, that language is the best source for testimonials and campaign hooks.",
+                "Reuse the highest-performing phrasing in your next message test.",
+            )
 
             leaderboard = df.copy()
             max_likes = max(float(leaderboard["likes"].max()), 1.0)
@@ -1986,6 +2218,11 @@ def render_dashboard(df, topic_keywords, actual_topics, source_label):
                 ],
                 width="stretch",
                 hide_index=True,
+            )
+            render_explanation(
+                "Signal leaderboard",
+                "These comments combine emotional weight and engagement. They are the best candidates for content ideas, support responses, or quote captures.",
+                "Look here first when you want evidence-backed marketing copy.",
             )
 
     with topics_tab:
@@ -2021,6 +2258,11 @@ def render_dashboard(df, topic_keywords, actual_topics, source_label):
             else:
                 st.bar_chart(positive_keywords.set_index("keyword"))
                 st.dataframe(positive_keywords, width="stretch", hide_index=True)
+                render_explanation(
+                    "Affirming language",
+                    "These are the words customers use when they are leaning in. They are ideal raw material for headlines, testimonials, and social proof.",
+                    "Mirror these phrases in campaign copy.",
+                )
 
         with keyword_right:
             st.markdown("<div class='section-label'>Words driving friction</div>", unsafe_allow_html=True)
@@ -2029,6 +2271,11 @@ def render_dashboard(df, topic_keywords, actual_topics, source_label):
             else:
                 st.bar_chart(negative_keywords.set_index("keyword"))
                 st.dataframe(negative_keywords, width="stretch", hide_index=True)
+                render_explanation(
+                    "Friction language",
+                    "These words often point to objections, doubts, or missing clarity. They are the fastest route to improving your messaging.",
+                    "Build a response page or FAQ around the most repeated friction terms.",
+                )
 
         question_examples = df[df["question_flag"]].head(6)
         st.markdown("<div class='section-label'>Questions the audience is already asking</div>", unsafe_allow_html=True)
@@ -2048,6 +2295,11 @@ def render_dashboard(df, topic_keywords, actual_topics, source_label):
                 width="stretch",
                 hide_index=True,
             )
+            render_explanation(
+                "Question review",
+                "Questions are a signal of curiosity and unresolved friction. They show what the audience still needs before it can convert or advocate.",
+                "Convert the most repeated questions into a landing-page explainer or FAQ.",
+            )
 
     with strategy_tab:
         recommendations = build_recommendations(df, topic_summaries)
@@ -2055,6 +2307,29 @@ def render_dashboard(df, topic_keywords, actual_topics, source_label):
         for column, (title, items) in zip(recommendation_columns, recommendations.items()):
             with column:
                 render_recommendation_card(title, items)
+
+        st.markdown("<div class='section-label accent'>Future insights</div>", unsafe_allow_html=True)
+        future_insights = build_future_insights(df, topic_summaries, pulse)
+        if future_insights:
+            insight_columns = st.columns(min(3, len(future_insights)), gap="large")
+            for column, insight in zip(insight_columns, future_insights):
+                with column:
+                    st.markdown(
+                        """
+                        <div class="forecast-card">
+                            <h4>{title}</h4>
+                            <div class="forecast-value">{value}</div>
+                            <p>{note}</p>
+                            <p style="margin-top:0.75rem;"><strong>Proposal:</strong> {proposal}</p>
+                        </div>
+                        """.format(
+                            title=escape_html(insight["title"]),
+                            value=escape_html(insight["value"]),
+                            note=escape_html(insight["note"]),
+                            proposal=escape_html(insight["proposal"]),
+                        ),
+                        unsafe_allow_html=True,
+                    )
 
         strategy_left, strategy_right = st.columns([1.05, 0.95])
         with strategy_left:
