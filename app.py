@@ -226,8 +226,8 @@ def load_css(theme_mode):
         }
 
         [data-testid="stMetric"] {
-            background: rgba(255, 252, 247, 0.78);
-            border: 1px solid rgba(17, 32, 59, 0.08);
+            background: __CARD_BG__;
+            border: 1px solid __CARD_BORDER__;
             border-radius: 22px;
             padding: 1rem 1.1rem;
             box-shadow: var(--shadow);
@@ -648,8 +648,8 @@ def load_css(theme_mode):
         .metric-card {
             border-radius: 24px;
             padding: 1.2rem;
-            background: rgba(255, 252, 247, 0.82);
-            border: 1px solid rgba(17, 32, 59, 0.08);
+            background: __CARD_BG__;
+            border: 1px solid __CARD_BORDER__;
             box-shadow: var(--shadow);
             min-height: 152px;
             position: relative;
@@ -690,8 +690,8 @@ def load_css(theme_mode):
             margin-top: 0.8rem;
             padding: 1rem 1.05rem;
             border-radius: 20px;
-            background: rgba(17, 32, 59, 0.05);
-            border: 1px solid rgba(17, 32, 59, 0.08);
+            background: __CARD_BG__;
+            border: 1px solid __CARD_BORDER__;
             color: var(--muted);
             line-height: 1.65;
         }
@@ -714,8 +714,8 @@ def load_css(theme_mode):
             height: 100%;
             padding: 1.15rem 1.2rem;
             border-radius: 22px;
-            border: 1px solid rgba(17, 32, 59, 0.08);
-            background: rgba(255, 252, 247, 0.84);
+            border: 1px solid __CARD_BORDER__;
+            background: __CARD_BG__;
             box-shadow: var(--shadow);
         }
 
@@ -741,8 +741,8 @@ def load_css(theme_mode):
             height: 100%;
             padding: 1.15rem 1.2rem;
             border-radius: 22px;
-            border: 1px solid rgba(17, 32, 59, 0.08);
-            background: rgba(255, 252, 247, 0.84);
+            border: 1px solid __CARD_BORDER__;
+            background: __CARD_BG__;
             box-shadow: var(--shadow);
         }
 
