@@ -1720,6 +1720,28 @@ def render_recommendation_card(title, items):
     )
 
 
+def render_algorithm_card(title, subtitle, body, bullets):
+    bullet_markup = "".join(
+        "<li>{0}</li>".format(escape_html(item)) for item in bullets
+    )
+    st.markdown(
+        """
+        <div class="proposal-card">
+            <div class="feature-kicker gold">{subtitle}</div>
+            <h4>{title}</h4>
+            <p>{body}</p>
+            <ul style="margin:0.9rem 0 0 1.1rem; color: var(--muted); line-height:1.6;">{bullets}</ul>
+        </div>
+        """.format(
+            title=escape_html(title),
+            subtitle=escape_html(subtitle),
+            body=escape_html(body),
+            bullets=bullet_markup,
+        ),
+        unsafe_allow_html=True,
+    )
+
+
 def set_data_source(mode):
     st.session_state["data_source"] = mode
 
@@ -1827,6 +1849,44 @@ def render_landing_page(mode_hint):
         ),
         unsafe_allow_html=True,
     )
+
+    st.markdown(
+        """
+        <div class="section-label accent" style="margin-top:2.45rem;">What this project does</div>
+        <div class="section-hero" style="margin-top:0; margin-bottom:1rem;">
+            <div>
+                <h2>Explainable brand intelligence for future marketing decisions</h2>
+                <p>This project takes comment data and turns it into sentiment signals, topic clusters, future insights, and marketing proposals. It is built to help brands understand what happened, what is happening now, and what to do next.</p>
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    overview_columns = st.columns(3, gap="large")
+    overview_cards = [
+        (
+            "Real-time analysis",
+            "The app reads comment streams and scores the audience reaction so teams can see whether the campaign is landing or drifting.",
+            "Sentiment + tone",
+            ["TextBlob sentiment scoring", "Audience posture detection", "Question signal tracking"],
+        ),
+        (
+            "Explainable clustering",
+            "It groups comments into narrative lanes and shows the words, signals, and examples that define each cluster.",
+            "TF-IDF + KMeans",
+            ["Topic discovery with TF-IDF", "KMeans clustering", "Readable topic labels"],
+        ),
+        (
+            "Future marketing ideas",
+            "The strategy layer proposes next moves, content opportunities, and forecast-style insights so the output is usable for planning.",
+            "Forecast + proposal",
+            ["Trend outlook", "Campaign proposals", "FAQ and content ideas"],
+        ),
+    ]
+    for column, (title, body, subtitle, bullets) in zip(overview_columns, overview_cards):
+        with column:
+            render_algorithm_card(title, subtitle, body, bullets)
 
     action_col, note_col = st.columns([0.28, 0.72])
     with action_col:
@@ -2039,12 +2099,13 @@ def render_dashboard(df, topic_keywords, actual_topics, source_label):
 
     render_metric_cards(metrics)
 
-    mission_tab, signal_tab, topics_tab, language_tab, strategy_tab = st.tabs(
+    mission_tab, signal_tab, topics_tab, language_tab, algorithm_tab, strategy_tab = st.tabs(
         [
             "Mission Control",
             "Signal Deep Dive",
             "Topic Radar",
             "Language Lab",
+            "Algorithm Lab",
             "Strategy Studio",
         ]
     )
@@ -2300,6 +2361,75 @@ def render_dashboard(df, topic_keywords, actual_topics, source_label):
                 "Questions are a signal of curiosity and unresolved friction. They show what the audience still needs before it can convert or advocate.",
                 "Convert the most repeated questions into a landing-page explainer or FAQ.",
             )
+
+    with algorithm_tab:
+        st.markdown(
+            """
+            <div class="section-label accent">Algorithm lab</div>
+            <div class="section-hero" style="margin-top:0;">
+                <div>
+                    <h2>How the project works under the hood</h2>
+                    <p>This section explains the main algorithms in plain language so the site stays transparent and easy to trust.</p>
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+        algo_columns = st.columns(2, gap="large")
+        with algo_columns[0]:
+            render_algorithm_card(
+                "TextBlob sentiment analysis",
+                "Sentiment engine",
+                "Each comment is scored for polarity so the app can separate positive, neutral, and negative reactions.",
+                [
+                    "Great for quick opinion mining",
+                    "Creates the sentiment labels shown in the dashboard",
+                    "Helps track message reception over time",
+                ],
+            )
+            render_algorithm_card(
+                "Heuristic audience tagging",
+                "Pattern rules",
+                "Simple keyword and punctuation rules detect questions, advocates, observers, and risk signals.",
+                [
+                    "Questions are caught with question marks",
+                    "Strong positive/negative language is flagged",
+                    "Useful when you want explainable labels",
+                ],
+            )
+
+        with algo_columns[1]:
+            render_algorithm_card(
+                "TF-IDF + KMeans topic discovery",
+                "Topic engine",
+                "Comments are converted into TF-IDF vectors and clustered with KMeans to discover recurring narrative lanes.",
+                [
+                    "TF-IDF turns words into weighted features",
+                    "KMeans groups similar comments together",
+                    "Top terms are used to name each topic",
+                ],
+            )
+            render_algorithm_card(
+                "Trend and forecast logic",
+                "Future insight layer",
+                "The app looks at sentiment direction, question load, and topic balance to suggest the next marketing move.",
+                [
+                    "Creates future-facing insight cards",
+                    "Highlights growth, risk, and opportunity",
+                    "Turns chart readings into proposals",
+                ],
+            )
+
+        st.markdown(
+            """
+            <div class="explain-card" style="margin-top:1.1rem;">
+                <strong>End-to-end pipeline</strong>
+                Raw comments -> cleaning -> sentiment scoring -> topic clustering -> explainable charts -> future insights and marketing proposals.
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
 
     with strategy_tab:
         recommendations = build_recommendations(df, topic_summaries)
