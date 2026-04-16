@@ -261,14 +261,14 @@ def load_css(theme_mode):
             bottom: 14px;
             transform: translateX(-50%);
             z-index: 9999;
-            width: min(92vw, 720px);
-            padding: 0.48rem;
-            border-radius: 28px;
-            background: color-mix(in srgb, var(--surface) 82%, transparent);
-            border: 1px solid color-mix(in srgb, var(--border) 74%, transparent);
-            box-shadow: 0 14px 36px rgba(0, 0, 0, 0.16);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            width: min(95vw, 920px);
+            padding: 0.5rem;
+            border-radius: 999px;
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid rgba(168, 85, 247, 0.28);
+            box-shadow: 0 22px 48px rgba(2, 6, 23, 0.34);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
         }
 
         .floating-nav.hidden {
@@ -279,10 +279,10 @@ def load_css(theme_mode):
         .floating-nav-inner {
             display: flex;
             align-items: center;
-            justify-content: flex-start;
-            gap: 0.28rem;
+            justify-content: center;
+            gap: 0.45rem;
             overflow-x: auto;
-            padding-bottom: 0.04rem;
+            padding-bottom: 0.02rem;
             scrollbar-width: none;
             -ms-overflow-style: none;
         }
@@ -293,10 +293,10 @@ def load_css(theme_mode):
 
         .floating-nav-label {
             flex: 0 0 auto;
-            color: var(--muted) !important;
+            color: rgba(226, 232, 240, 0.68) !important;
             font-size: 0.62rem;
             font-weight: 800;
-            letter-spacing: 0.14em;
+            letter-spacing: 0.16em;
             text-transform: uppercase;
             padding: 0 0.12rem;
         }
@@ -304,7 +304,7 @@ def load_css(theme_mode):
         .floating-nav-divider {
             flex: 0 0 1px;
             height: 16px;
-            background: color-mix(in srgb, var(--border) 80%, transparent);
+            background: rgba(148, 163, 184, 0.28);
             margin: 0 0.1rem;
         }
 
@@ -313,56 +313,81 @@ def load_css(theme_mode):
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 0.25rem;
-            padding: 0.44rem 0.72rem;
+            gap: 0.5rem;
+            padding: 0.46rem 0.92rem;
             border-radius: 999px;
             text-decoration: none;
             white-space: nowrap;
             font-weight: 700;
             font-size: 0.72rem;
-            color: var(--ink) !important;
-            border: 1px solid color-mix(in srgb, var(--border) 85%, transparent);
-            background: color-mix(in srgb, var(--card) 78%, transparent);
-            transition: transform 160ms ease, background 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+            color: rgba(226, 232, 240, 0.78) !important;
+            border: 1px solid rgba(148, 163, 184, 0.18);
+            background: rgba(15, 23, 42, 0.38);
+            transition: transform 160ms ease, background 160ms ease, border-color 160ms ease, box-shadow 160ms ease, color 160ms ease;
         }
 
         .floating-nav a:hover {
             transform: translateY(-1px);
-            background: color-mix(in srgb, var(--card) 64%, var(--accent) 10%);
-            border-color: color-mix(in srgb, var(--accent) 36%, var(--border));
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            color: #e9d5ff !important;
+            background: rgba(30, 41, 59, 0.82);
+            border-color: rgba(168, 85, 247, 0.3);
+            box-shadow: 0 10px 24px rgba(2, 6, 23, 0.18);
         }
 
         .floating-nav a.primary {
-            background: linear-gradient(135deg, rgba(255, 107, 53, 0.96), rgba(255, 145, 83, 0.92));
-            color: #fff8f1 !important;
-            border-color: transparent;
-            box-shadow: 0 10px 22px rgba(255, 107, 53, 0.22);
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.98), rgba(168, 85, 247, 0.94));
+            color: #ffffff !important;
+            border-color: rgba(196, 181, 253, 0.24);
+            box-shadow: 0 12px 26px rgba(124, 58, 237, 0.34);
         }
 
         .floating-nav a.primary:hover {
-            background: linear-gradient(135deg, rgba(255, 121, 68, 0.98), rgba(255, 153, 95, 0.96));
+            background: linear-gradient(135deg, rgba(139, 92, 246, 1), rgba(168, 85, 247, 0.98));
+        }
+
+        .nav-icon {
+            display: inline-flex;
+            width: 18px;
+            height: 18px;
+            flex: 0 0 18px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav-icon svg {
+            width: 18px;
+            height: 18px;
+            stroke-width: 2;
+        }
+
+        .nav-copy {
+            display: inline;
         }
 
         @media (max-width: 720px) {
             .floating-nav {
-                width: min(94vw, 100%);
-                padding: 0.4rem;
-                border-radius: 22px;
+                width: min(95vw, 100%);
+                padding: 0.38rem;
+                border-radius: 999px;
             }
 
             .floating-nav-inner {
-                gap: 0.2rem;
+                gap: 0.25rem;
             }
 
             .floating-nav-label {
-                font-size: 0.56rem;
+                font-size: 0.54rem;
                 letter-spacing: 0.12em;
             }
 
             .floating-nav a {
-                padding: 0.38rem 0.62rem;
-                font-size: 0.68rem;
+                padding: 0.36rem 0.58rem;
+                font-size: 0.66rem;
+                gap: 0.35rem;
+            }
+
+            .nav-copy {
+                display: none;
             }
         }
 
@@ -2055,57 +2080,78 @@ def render_bottom_nav(mode_hint):
     if nav_hidden:
         return
 
-    if mode_hint == "Landing page":
-        section_items = [
-            ("#top", "Top"),
-            ("#project-overview", "Overview"),
-            ("#methods-overview", "Algorithms"),
-            ("#input-shape", "Input"),
-        ]
-    else:
-        section_items = [
-            ("#top", "Top"),
-            ("#mission-control", "Mission"),
-            ("#topic-radar", "Topics"),
-            ("#algorithm-lab", "Methods"),
-            ("#strategy-studio", "Strategy"),
-        ]
-
     mode_items = [
-        ("?mode=landing", "Landing", mode_hint == "Landing page"),
-        ("?mode=sample", "Sample", mode_hint == "Use sample data"),
-        ("?mode=upload", "Upload", mode_hint == "Upload CSV"),
-        ("?mode=youtube", "YouTube", mode_hint == "Fetch from YouTube"),
+        (
+            "?mode=landing",
+            "Landing",
+            mode_hint == "Landing page",
+            """
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M3 12l9-8 9 8"></path>
+                <path d="M5 10v10h14V10"></path>
+                <path d="M10 20v-6h4v6"></path>
+            </svg>
+            """,
+        ),
+        (
+            "?mode=sample",
+            "Sample",
+            mode_hint == "Use sample data",
+            """
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M4 6h16"></path>
+                <path d="M4 12h16"></path>
+                <path d="M4 18h16"></path>
+                <circle cx="9" cy="6" r="1.5"></circle>
+                <circle cx="15" cy="12" r="1.5"></circle>
+                <circle cx="7" cy="18" r="1.5"></circle>
+            </svg>
+            """,
+        ),
+        (
+            "?mode=upload",
+            "Upload",
+            mode_hint == "Upload CSV",
+            """
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 3v12"></path>
+                <path d="m7 8 5-5 5 5"></path>
+                <path d="M5 21h14"></path>
+            </svg>
+            """,
+        ),
+        (
+            "?mode=youtube",
+            "YouTube",
+            mode_hint == "Fetch from YouTube",
+            """
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="3" y="5" width="18" height="14" rx="4"></rect>
+                <path d="M10 9l6 3-6 3V9z"></path>
+            </svg>
+            """,
+        ),
     ]
     active_mode = next((label for href, label, active in mode_items if active), "Landing page")
 
     mode_links = "".join(
-        "<a class='{cls}' href='{href}'>{label}</a>".format(
+        "<a class='{cls}' href='{href}' aria-current='{current}'>{icon}<span class='nav-copy'>{label}</span></a>".format(
             cls="primary" if is_active else "",
             href=escape_html(href),
+            current="page" if is_active else "false",
+            icon=icon,
             label=escape_html(label),
         )
-        for href, label, is_active in mode_items
-    )
-    section_links = "".join(
-        "<a href='{href}'>{label}</a>".format(
-            href=escape_html(href),
-            label=escape_html(label),
-        )
-        for href, label in section_items
+        for href, label, is_active, icon in mode_items
     )
     st.markdown(
         """
-        <div class="floating-nav" aria-label="Quick navigation">
+        <nav class="floating-nav" aria-label="Quick navigation">
             <div class="floating-nav-inner">
-                <span class="floating-nav-label">Workspace</span>
-                <a class="primary" href="?mode={mode}">{active_mode}</a>
-                <span class="floating-nav-divider"></span>
-                <span class="floating-nav-label">Sections</span>
-                {section_links}
+                {mode_links}
             </div>
-        </div>
-        """.format(active_mode=escape_html(active_mode), mode=escape_html(MODE_ROUTE_MAP.get(st.session_state.get("data_source", "Landing page"), "landing")), section_links=section_links),
+        </nav>
+        """.format(mode_links=mode_links),
         unsafe_allow_html=True,
     )
 
